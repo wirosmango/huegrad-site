@@ -14,8 +14,8 @@ ul {
   background: transparent;
   border: none;
   cursor: pointer;
-  position: fixed;
-  top: 15px;
+  position: absolute;
+  bottom: 35%;
   left: 15px;
   z-index: 20;
   padding: 0;
@@ -147,6 +147,13 @@ body {
   color: #cdd6f4;
 }
 
+.news-img {
+    max-height: 500px;
+    max-width: 100%;
+    height: auto;
+    width: auto;
+}
+
 .cards-container {
   display: flex;
   /* Включаем Flexbox */
@@ -160,7 +167,6 @@ body {
 .card h2 {
   margin-top: 0;
 }
-
 
 .glide {
   max-width: 800px;
@@ -186,20 +192,23 @@ header {
   background-image: url(huegrad/images/huegrad.jpg);
   padding: 20px;
   text-align: center;
+  position: relative;
 }
 
 .top-menu {
-  display: none;
-  flex-direction: column;
-  position: fixed;
+   position: fixed; /* было absolute */
   top: 0;
   left: 0;
-  height: 100%;
-  width: 250px;
+  height: 100vh; /* вместо 100% — надёжнее для fixed */
+  width: 275px;
   background-color: #1e1e2e;
   padding: 60px 20px;
   box-shadow: 4px 0 12px rgba(0, 0, 0, 0.4);
   z-index: 15;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
 }
 
 .top-menu a {
@@ -209,6 +218,10 @@ header {
 
 .top-menu.active {
   display: flex;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  flex-direction: column
 }
 
 a {
@@ -381,4 +394,5 @@ a:hover {
     background-color: #585b70;
     ;
   }
+  
 }
