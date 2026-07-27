@@ -5,6 +5,43 @@ ul {
   border-radius: 5px;
 }
 
+.burger-btn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 22px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 20;
+  padding: 0;
+}
+
+.burger-btn span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.burger-btn.active span:nth-child(1) {
+  transform: translateY(9.5px) rotate(45deg);
+}
+
+.burger-btn.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-btn.active span:nth-child(3) {
+  transform: translateY(-9.5px) rotate(-45deg);
+}
+
 .heroi-huegrada {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #fcfcfc;
@@ -152,28 +189,26 @@ header {
 }
 
 .top-menu {
-  position: sticky;
-  /* Закрепляет меню на экране */
+  display: none;
+  flex-direction: column;
+  position: fixed;
   top: 0;
-  /* Прижимает к верхнему краю */
   left: 0;
-  /* Прижимает к левому краю */
-  width: 100%;
-  /* Растягивает меню на весь экран */
-  background-color: transparent;
-  /* Цвет фона */
-  padding: 10px 0;
-  /* Отступы сверху и снизу */
-  z-index: 10;
+  height: 100%;
+  width: 250px;
+  background-color: #1e1e2e;
+  padding: 60px 20px;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.4);
+  z-index: 15;
 }
 
 .top-menu a {
-  color: white;
-  /* Цвет текста */
-  text-decoration: none;
-  /* Убирает подчеркивание */
-  margin: 0 15px;
-  /* Расстояние между ссылками */
+  margin: 10px 0;
+  font-size: 1.1rem;
+}
+
+.top-menu.active {
+  display: flex;
 }
 
 a {
@@ -229,6 +264,7 @@ a:hover {
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
+
 .form-container {
   max-width: 420px;
   margin: 40px auto;
@@ -291,7 +327,8 @@ a:hover {
   text-align: center;
   margin-top: 14px;
   font-size: 14px;
-  color: #16a34a;min-height: 18px;
+  color: #16a34a;
+  min-height: 18px;
 }
 
 /* Описываем ключевые кадры движения */
@@ -331,13 +368,6 @@ a:hover {
     border: 2px solid #585887;
     background: #1e1e2e;
     box-sizing: border-box;
-  }
-
-  .top-menu {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    color: #4c536d;
   }
 
   header {

@@ -15,10 +15,15 @@
 <body>
     <header class="top-background">
         <h1>Хуеград</h1>
-        <nav class="top-menu">
+        <button class="burger-btn" id="burgerBtn" aria-label="Меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="top-menu" id="topMenu">
             <a href="index.html">Главная</a>
             <a href="drochka.html">Дрочка</a>
-            <a href="mods/index.html">Доп. ресурсы</a>
+            <a href="mods/">Доп. ресурсы</a>
             <a href="news.html">Новости</a>
             <a href="history.html">История Хуеграда</a>
             <a href="ptu.html">ПТУ для ебланов №67</a>
@@ -57,6 +62,16 @@
 
         <p class="footer">Хуеград™, все права защищены <span style="font-size: 6px;">(нет)</span></p>
     </div>
+
+    <script>
+        const burgerBtn = document.getElementById('burgerBtn');
+        const topMenu = document.getElementById('topMenu');
+
+        burgerBtn.addEventListener('click', () => {
+            burgerBtn.classList.toggle('active');
+            topMenu.classList.toggle('active');
+        });
+    </script>
 
 </body>
 

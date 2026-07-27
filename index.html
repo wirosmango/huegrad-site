@@ -2,19 +2,22 @@
 <html>
 
 <head>
-    <title>Хуеград</title>
+    <title>Хуеграда</title>
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="huegrad/images/пиздюк.jpg">
     <link href="./style.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
     <header class="top-background">
         <h1>Хуеград</h1>
-        <nav class="top-menu">
+        <button class="burger-btn" id="burgerBtn" aria-label="Меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="top-menu" id="topMenu">
             <a href="index.html">Главная</a>
             <a href="drochka.html">Дрочка</a>
             <a href="mods/">Доп. ресурсы</a>
@@ -28,19 +31,22 @@
         </u></h2>
     <p>На нашем сервере вы сможете посетить прекрасный город Хуеград, а также пообщаться с гениальными админами:
     <ul class="heroi-huegrada">
-        <li>ruzlan_b560m_h - администратор сервера, пиздолиз, ходит со скином Навального Лёши, а также юзер сеом 14у, а
+        <li>ruzlan_b560m_h - администратор сервера, пиздолиз, ходит со скином Навального Лёши, а также юзер сеом
+            14у, а
             ещё еблан у которого 3 дома блять (было потому что потом справедливость восторжествовала)
         </li>
         <li>pur1tym1nd - умнейший инжесекс, ходит со скином Нико Ваншот, обкуренный травой долбоёб, магистр
             гейства гейлорд, любитель матана, ассемблера и семейство сишных языков,
-            ебанутый пидорас, розебал розмарин во едебел, толерантнейший расист, нацист, антисемит, любит еврайзийство и
+            ебанутый пидорас, розебал розмарин во едебел, толерантнейший расист, нацист, антисемит, любит
+            еврайзийство и
             дедушку дугина, а также сохнет по старым телефончикам
             по типу люмий и старых sony xperia, а также патриот Поволжского Областничества и правитель Британской
             Империи <img src="https://i.pinimg.com/736x/80/1b/bb/801bbb53a6c42f16d64b1f90a1910974.jpg" height=30
                 align=center> <img
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_the_Eurasian_Youth_Union.svg/1280px-Flag_of_the_Eurasian_Youth_Union.svg.png"
                 height=30 align=center> </li>
-        <li>wiros229 - ибил какой-то, один из строителей Хуеграда, тупоголовый еблан, а также мразь, страдающая от лудки
+        <li>wiros229 - ибил какой-то, один из строителей Хуеграда, тупоголовый еблан, а также мразь, страдающая от
+            лудки
             в китайских гачах и дрочащий на пидорасов, погоняло "Горящий пердак 3000", розебал 2 мышки за 3 грёбаных
             часа -2 rampage edit. любит дедушку Нетаньянху <img
                 src="https://i.pinimg.com/736x/87/5b/3c/875b3c98908820493d97554270c91385.jpg" align=center height=30>
@@ -104,6 +110,15 @@
     </div>
     <script>
         new Glide('.glide').mount();
+    </script>
+    <script>
+        const burgerBtn = document.getElementById('burgerBtn');
+        const topMenu = document.getElementById('topMenu');
+
+        burgerBtn.addEventListener('click', () => {
+            burgerBtn.classList.toggle('active');
+            topMenu.classList.toggle('active');
+        });
     </script>
     <p>Хуеград™, все права защищены <span style="font-size: 6px;">(нет)</span></p>
 </body>
