@@ -207,8 +207,8 @@ header {
   z-index: 15;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-10px);
-  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  transform: translateX(-10px);
+  transition: opacity 0.2s ease, transform 0.5s ease, visibility 0.5s;
 }
 
 .top-menu a {
@@ -220,7 +220,7 @@ header {
   display: flex;
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  transform: translateX(0);
   flex-direction: column
 }
 
