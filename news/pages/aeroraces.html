@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Первый междугородний авиаперелёт</title>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="huegrad/images/пиздюк.jpg">
+    <base href="/huegrad-site/">
+    <link href="style.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+</head>
+
+<body>
+    <header class="top-background">
+        <h1>Хуеград</h1>
+        <button class="burger-btn" id="burgerBtn" aria-label="Меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="top-menu" id="topMenu">
+            <a href="index.html">Главная</a>
+            <a href="drochka.html">Дрочка</a>
+            <a href="mods/">Доп. ресурсы</a>
+            <a href="news.html">Новости</a>
+            <a href="history.html">История Хуеграда</a>
+            <a href="ptu.html">ПТУ для ебланов №67</a>
+            <a href="pizdjuk.html">Пиздюк</a>
+        </nav>
+    </header>
+
+
+    <div class="news">
+        <h1>Первый междугородний авиаперелёт Хуеград - Меллстройск</h1>
+        <p>30 июля состоялся первый междугородний авиаперелёт по маршруту Хуеград - Меллстройск.<br>
+        Авиаперелёт осуществляла компания Huegrad Airlines и её пилоты - wiros229 и ruzlan_b560m_h. На данный момент 
+        для междугородних авиаперелётов доступен лишь один двухместный самолёт, либо можно арендовать
+        A-10 Thunderbolt (за "небольшую" сумму в 100.000 курымдыков за 1.000 км) и полететь на нём самому,
+        почувствовав себя вольной птицей. 
+        </p>
+        
+        <div class="glide">
+            <div class="glide__track" data-glide-el="track">
+                <ul class="glide__slides">
+                    <li class="glide__slide">
+                        <img src="/news/content/polet.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="/news/content/polet2.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="/news/content/polet3.png">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Glide('.glide', {
+                type: 'carousel',
+                autoplay: 3500,
+                hoverpause: true
+            }).mount();
+    </script>
+
+    <script>
+        const burgerBtn = document.getElementById('burgerBtn');
+        const topMenu = document.getElementById('topMenu');
+
+        burgerBtn.addEventListener('click', () => {
+            burgerBtn.classList.toggle('active');
+            topMenu.classList.toggle('active');
+        });
+    </script>
+
+</body>
+
+</html>
