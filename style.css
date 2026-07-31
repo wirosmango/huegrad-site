@@ -195,6 +195,17 @@ header {
   position: relative;
 }
 
+.backtohome a:hover {
+  background: none;
+  padding: 0px 0px;
+  color: #585887;
+}
+
+.backtohome a {
+  padding: 0px 0px;
+  color: #cdd6f4;
+}
+
 .top-menu {
    position: fixed; /* было absolute */
   top: 0;
