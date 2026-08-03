@@ -206,6 +206,11 @@ header {
   color: #cdd6f4;
 }
 
+.backtohome {
+  background: transparent;
+  border: none;
+}
+
 .top-menu {
    position: fixed; /* было absolute */
   top: 0;
