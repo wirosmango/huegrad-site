@@ -209,6 +209,7 @@ header {
 .backtohome {
   background: transparent;
   border: none;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .top-menu {
