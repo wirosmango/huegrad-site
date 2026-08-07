@@ -295,6 +295,88 @@ a:hover {
   color: transparent;
 }
 
+.post { 
+  padding: 10px 0; 
+}
+.post input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 5px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #cdd6f4;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.post textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  background-color: #cdd6f4;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.post b { 
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  /* Делаем фоновое изображение в 4 раза больше контейнера */
+  background-size: 400% 400%;
+  /* Применяем анимацию с длительностью 15 секунд, бесконечно и с плавным переходом */
+  animation: gradientShift 15s ease infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.post small { 
+  color: #888; 
+  margin-left: 8px; 
+}
+.post p { 
+  margin: 5px 0 0; 
+  white-space: pre-wrap; 
+}
+
+.input-wrapper {
+  position: relative;
+  margin-top: 10px;
+}
+
+.input-wrapper textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 90px 10px 10px; /* справа место под кнопку */
+  min-height: 80px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.input-wrapper button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  background: #1e1e2e;
+  color: white;
+}
+
+input-wrapper button:hover {
+  background: #6366f1;
+}
+
 .form-container {
   max-width: 420px;
   margin: 40px auto;
