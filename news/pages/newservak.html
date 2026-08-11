@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Сервер восстановлен!</title>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="huegrad/images/пиздюк.jpg">
+    <base href="/huegrad-site/">
+    <link href="style.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <button class="backtohome">
+            <a href="index.html"><h1>Хуеград</h1></a>
+        </button>
+        <button class="burger-btn" id="burgerBtn" aria-label="Меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="top-menu" id="topMenu">
+            <a href="index.html">Главная</a>
+            <a href="drochka.html">Дрочка</a>
+            <a href="mods/">Доп. ресурсы</a>
+            <a href="news.html">Новости</a>
+            <a href="history.html">История Хуеграда</a>
+            <a href="ptu.html">Образование в Хуеграде</a>
+            <a href="pizdjuk.html">Пиздюк</a>
+            <a href="forum.html">Форум</a>
+        </nav>
+    </header>
+
+
+    <div class="news">
+        <h1>Сервер восстановлен!</h1>
+        <p>Игрок Pabalo666 арендовал новый VDS сервер на 3 месяца. Теперь Хуеград, как и весь сервер, ждут 
+           3 месяца спокойного развития и процветания 
+        </p>
+        <div class="glide">
+            <div class="glide__track" data-glide-el="track">
+                <ul class="glide__slides">
+                    <li class="glide__slide">
+                        <img src="news/content/newservak.jpg">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Glide('.glide').mount();
+    </script>
+
+    <script>
+        const burgerBtn = document.getElementById('burgerBtn');
+        const topMenu = document.getElementById('topMenu');
+
+        burgerBtn.addEventListener('click', () => {
+            burgerBtn.classList.toggle('active');
+            topMenu.classList.toggle('active');
+        });
+    </script>
+
+</body>
+</html>
+        

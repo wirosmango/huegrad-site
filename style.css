@@ -384,6 +384,15 @@ input-wrapper button:hover {
   margin: 2%;
   padding: 0 5%;
 }
+
+.announcement-happy {
+  background-color: #16a34a;
+  color: #fff;
+  border: 3px solid #cfc6a6;
+  margin: 2%;
+  padding: 0 5%;
+  text-align: center;
+}
 .form-container {
   max-width: 420px;
   margin: 40px auto;
