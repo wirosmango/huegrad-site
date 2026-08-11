@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('sendBtn').addEventListener('click', sendPost);
 });
 
-const q = query(postsRef, orderBy("createdAt", "desc"));
+const q = query(postsRef, orderBy("createdAt", "asc")); // изменили desc → asc
 
 onSnapshot(q, (snapshot) => {
   const container = document.getElementById('posts');
@@ -48,26 +48,86 @@ onSnapshot(q, (snapshot) => {
     return;
   }
 
-  snapshot.forEach((doc) => {
+  const docs = snapshot.docs; // порядок: от старых к новым
+  const total = docs.length;
+
+  // переворачиваем только для отображения (новые сверху),
+  // но номер считаем от исходного порядка (старые = маленькие номера)
+  [...docs].reverse().forEach((doc, i) => {
     const p = doc.data();
+    const number = total - i; // т.к. массив развёрнут
 
     const div = document.createElement('div');
     div.className = 'post';
+    div.id = `post-${number}`;
+
+    const numEl = document.createElement('span');
+    numEl.className = 'post-number';
+    numEl.textContent = `#${number}`;
+
+    numEl.addEventListener('click', () => {
+      const messageInput = document.getElementById('message');
+      messageInput.value = `#${number} ` + messageInput.value;
+      messageInput.focus();
+    });
 
     const nickEl = document.createElement('b');
-    nickEl.textContent = p.nickname;
+    nickEl.textContent = ' ' + p.nickname;
 
     const dateEl = document.createElement('small');
     dateEl.textContent = p.createdAt
       ? p.createdAt.toDate().toLocaleString('ru-RU')
       : 'только что';
-
+    
+      function renderMessageWithLinks(text) {
+        const fragment = document.createDocumentFragment();
+        const regex = /#(\d+)/g;
+        let lastIndex = 0;
+        let match;
+        
+        while ((match = regex.exec(text)) !== null) {
+          // текст до найденного номера
+          if (match.index > lastIndex) {
+            fragment.appendChild(
+              document.createTextNode(text.slice(lastIndex, match.index))
+            );
+          }
+          
+          // сама ссылка
+          const num = match[1];
+          const link = document.createElement('a');
+          link.href = `#post-${num}`;
+          link.textContent = `#${num}`;
+          link.className = 'post-ref';
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const target = document.getElementById(`post-${num}`);
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              target.classList.add('highlight');
+              setTimeout(() => target.classList.remove('highlight'), 1500);
+            }
+          });
+          fragment.appendChild(link);
+          
+          lastIndex = regex.lastIndex;
+        }
+        
+        // остаток текста после последнего совпадения
+        if (lastIndex < text.length) {
+          fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+        }
+        
+        return fragment;
+      }
     const msgEl = document.createElement('p');
-    msgEl.textContent = p.message;
+    msgEl.appendChild(renderMessageWithLinks(p.message));
 
+    div.appendChild(numEl);
     div.appendChild(nickEl);
     div.appendChild(dateEl);
     div.appendChild(msgEl);
+
     container.appendChild(div);
   });
 });

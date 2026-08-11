@@ -303,7 +303,7 @@ a:hover {
   padding: 12px 14px;
   margin-bottom: 5px;
   border: 1.5px solid #e0e0e0;
-  border-radius: 10px;
+  border-radius: 5px;
   background-color: #cdd6f4;
   font-size: 15px;
   box-sizing: border-box;
@@ -314,7 +314,7 @@ a:hover {
   width: 100%;
   padding: 12px 14px;
   border: 1.5px solid #e0e0e0;
-  border-radius: 10px;
+  border-radius: 5px;
   background-color: #cdd6f4;
   font-size: 15px;
   box-sizing: border-box;
@@ -338,6 +338,34 @@ a:hover {
 .post p { 
   margin: 5px 0 0; 
   white-space: pre-wrap; 
+}
+
+.post-number {
+  color: #888;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.post-number:hover {
+  text-decoration: underline;
+}
+
+.post-ref {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.post-ref:hover {
+  text-decoration: underline;
+}
+
+.post.highlight {
+  background: #cdd6f4;
+  transition: background 0.3s ease;
+  color: #1e1e2e;
+  padding: 2%;
+  border-radius: 5px;
 }
 
 .input-wrapper {
