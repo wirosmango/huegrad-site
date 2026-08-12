@@ -188,6 +188,11 @@ body {
   object-fit: cover;
 }
 
+.glide__slide a:hover {
+  text-decoration: underline;
+  background: none;
+}
+
 header {
   background-image: url(huegrad/images/huegrad.jpg);
   padding: 20px;
@@ -447,8 +452,6 @@ input-wrapper button:hover {
 
 .topic-item {
   display: block;
-  padding: 8px 6px;
-  border-radius: 6px;
   text-decoration: none;
   color: #cdd6f4;
   margin-bottom: 2px;

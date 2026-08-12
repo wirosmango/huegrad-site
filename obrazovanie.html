@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Образование в Хуеграде</title>
+    <meta charset="utf-8" />
+    <link href="./style.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/png" href="huegrad/images/пиздюк.jpg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+</head>
+<html>
+
+<body>
+    <header>
+        <button class="backtohome">
+            <a href="index.html"><h1>Хуеград</h1></a>
+        </button>
+        <button class="burger-btn" id="burgerBtn" aria-label="Меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="top-menu" id="topMenu">
+            <a href="index.html">Главная</a>
+            <a href="drochka.html">Дрочка</a>
+            <a href="mods/">Доп. ресурсы</a>
+            <a href="news.html">Новости</a>
+            <a href="history.html">История Хуеграда</a>
+            <a href="ptu.html">Образование в Хуеграде</a>
+            <a href="pizdjuk.html">Пиздюк</a>
+            <a href="forum.html">Форум</a>
+        </nav>
+    </header>
+    <div class="title">
+        <h1 class="animated-gradient">Образование в Хуеграде</h1>
+    </div>
+    <div class="news">
+        <h2>Добро пожаловать на страницу управления образования Хуеграда!</h2>
+        <p>Ознакомьтесь с нашими замечательными образовательными учреждениями: </p>
+
+         <div class="mellstroj">
+            <div class="glide">
+                <div class="glide__track" data-glide-el="track">
+                    <ul class="glide__slides">
+                        <li class="glide__slide">
+                            <img src="huegrad/images/ptu17.png">
+                            <a href="ptu.html">ПТУ для ебланов №67</a>
+                        </li>
+                        <li class="glide__slide">
+                            <img src="huegrad/images/htuix4.png">
+                            <a href="htuix.html">ХТУ им. Хинера</a>
+                        </li>
+                        <li class="glide__slide">
+                            <img src="huegrad/images/shokla.png">
+                            <a href="shokla.html">Школа №1 г. Хуеград</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+         </div>
+
+        <script>
+            new Glide('.glide').mount();
+            document.querySelectorAll('.glide').forEach((el) => {
+                new Glide(el).mount();
+            });
+        </script>
+
+        <script>
+            const burgerBtn = document.getElementById('burgerBtn');
+            const topMenu = document.getElementById('topMenu');
+
+            burgerBtn.addEventListener('click', () => {
+                burgerBtn.classList.toggle('active');
+                topMenu.classList.toggle('active');
+            });
+        </script>
+
+</body>
+
+</html>
