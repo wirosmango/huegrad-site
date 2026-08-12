@@ -3,7 +3,7 @@ section .data
     msglen equ $ - msg
 
 section .text
-    global _start:
+    global _start
 
 _start:
     mov rax, 1
