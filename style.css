@@ -194,7 +194,7 @@ body {
 }
 
 header {
-  background-image: url(huegrad/images/huegrad.jpg);
+  background-image: url(media/huegrad.jpg);
   padding: 20px;
   text-align: center;
   position: relative;
@@ -460,12 +460,14 @@ input-wrapper button:hover {
 .topic-item:hover {
   background: #f3f4f6;
   color: #2563eb;
+  border-radius: 5px;
 }
 
 .topic-item.active {
   background: #dbeafe;
   color: #2563eb;
   font-weight: bold;
+  border-radius: 5px;
 }
 
 .content {
@@ -611,7 +613,7 @@ input-wrapper button:hover {
   }
 
   header {
-    background-image: url(huegrad/images/huegrad-phone-banner.png);
+    background-image: url(media/huegrad-phone-banner.png);
     padding: 10px;
     text-align: center;
   }
