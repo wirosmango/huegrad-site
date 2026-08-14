@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Построено здание ХуеДумы</title>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="../media/пиздюк.jpg">
+    <link href="../style.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <button class="backtohome">
+            <a href="../index.html"><h1>Хуеград</h1></a>
+        </button>
+        <button class="burger-btn" id="burgerBtn" aria-label="Меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="top-menu" id="topMenu">
+            <a href="../index.html">Главная</a>
+            <a href="../drochka.html">Дрочка</a>
+            <a href="../mods/">Доп. ресурсы</a>
+            <a href="../news.html">Новости</a>
+            <a href="../history.html">История Хуеграда</a>
+            <a href="../obrazovanie.html">Образование в Хуеграде</a>
+            <a href="../pizdjuk.html">Пиздюк</a>
+            <a href="../forum.html">Форум</a>
+        </nav>
+    </header>
+
+
+    <div class="news">
+        <h1>Построено здание ХуеДумы</h1>
+        <p>13 августа завершено строительство здания ХуеДумы - парламента Республики Хуеград. Теперь все законы республики будут приниматься там.<br>
+        По устройству ХуеДума - однопалатный парламент. Глава парламента (и, следовательно, республики) - премьер-министр. Всего мест в парламенте - 33. 
+        Скоро пройдут выборы, и мы расскажем, кто же стал премьер-министром, какие партии и в каком соотношении заняли места. 
+        </p>
+        
+        <div class="glide">
+            <div class="glide__track" data-glide-el="track">
+                <ul class="glide__slides">
+                    <li class="glide__slide">
+                        <img src="../media/hueduma.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="../media/hueduma2.png">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Glide('.glide', {
+                type: 'carousel',
+                autoplay: 3500,
+                hoverpause: true
+            }).mount();
+    </script>
+
+    <script>
+        const burgerBtn = document.getElementById('burgerBtn');
+        const topMenu = document.getElementById('topMenu');
+
+        burgerBtn.addEventListener('click', () => {
+            burgerBtn.classList.toggle('active');
+            topMenu.classList.toggle('active');
+        });
+    </script>
+
+</body>
+
+</html>
