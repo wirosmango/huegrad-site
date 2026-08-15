@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Установлены избирательные участки</title>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="../media/пиздюк.jpg">
+    <link href="../style.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <button class="backtohome">
+            <a href="../index.html"><h1>Хуеград</h1></a>
+        </button>
+        <button class="burger-btn" id="burgerBtn" aria-label="Меню">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="top-menu" id="topMenu">
+            <a href="../index.html">Главная</a>
+            <a href="../drochka.html">Дрочка</a>
+            <a href="../mods/">Доп. ресурсы</a>
+            <a href="../news.html">Новости</a>
+            <a href="../history.html">История Хуеграда</a>
+            <a href="../obrazovanie.html">Образование в Хуеграде</a>
+            <a href="../pizdjuk.html">Пиздюк</a>
+            <a href="../forum.html">Форум</a>
+        </nav>
+    </header>
+
+
+    <div class="news">
+        <h1>Установлены избирательные участки для выборов в Хуедуму</h1>
+        <p>15 августа установлены избирательные участки для выборов в Хуедуму. Проголосовать за близкую по идеям партию,
+        не выезжая в другие поселения, смогут жители Хуеграда, с. Дилдаково, с. Дилдаковское и Меллстройска. 
+        <br><p style="text-align: center;">Список партий на выборах:</p>
+        <ul class="heroi-huegrada">
+            <li>1. <b>СДПХ</b> - Социал-демократическая партия Хуеграда. Выступают за справедливое налогооблажение для корпораций, толерантность и сотрудничество с соседними государствами</li>
+            <li>2. <b>Новый Хуеград</b> - правые либералы, выступают за свободный рынок и построение капиталистического центра мировой экономики в Хуеграде</li>
+            <li>3. <b>Партия фембоев</b> - выступают за свободу прессы, развитие инфраструктуры Хуеграда и населённых пунктов области, а также помощь в развитии малому и среднему бизнесу</li>
+            <li>4. <b>Национал-приколисты Хуеграда</b> - выступают за увеличение влияния Хуеграда на другие страна, считают, что Хуеград великая страна и она должна быть центром планеты</li>
+            <li>5. <b>Виндузятники</b> - выступают за запрет на использование чего-либо кроме windows</li>
+            <li>6. <b>Новые люди (воздуханы)</b> - выступают за улучшение инфраструктуры Хуеграда "в тысячи раз", построят  бк и мак у каждого дома, увеличат кол-во мест в школах и больницах.</li>
+            <li>7. <b>Либертарианская Гомопартия Хинера</b> - самовыдвиженцы, ждём предвыборную кампанию</li>
+            <li>8. <b>Партия Ебанушки</b> - самовыдвиженцы, ждём предвыборную кампанию</li>
+        </ul>
+        </p>
+        
+        <div class="glide">
+            <div class="glide__track" data-glide-el="track">
+                <ul class="glide__slides">
+                    <li class="glide__slide">
+                        <img src="../media/vybory1.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="../media/vybory2.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="../media/vybory3.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="../media/vybory4.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="../media/vybory5.png">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        new Glide('.glide', {
+                type: 'carousel',
+                autoplay: 3500,
+                hoverpause: true
+            }).mount();
+    </script>
+
+    <script>
+        const burgerBtn = document.getElementById('burgerBtn');
+        const topMenu = document.getElementById('topMenu');
+
+        burgerBtn.addEventListener('click', () => {
+            burgerBtn.classList.toggle('active');
+            topMenu.classList.toggle('active');
+        });
+    </script>
+
+</body>
+
+</html>
