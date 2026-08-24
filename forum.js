@@ -84,19 +84,21 @@ function openTopic(topicId, title) {
   if (!content) return;
 
   content.innerHTML = `
-  <h1>${title}</h1>
-  <div class="post">
-    <input id="nickname" placeholder="Ваш ник" maxlength="30">
-    <div class="input-wrapper">
-      <textarea id="message" placeholder="Сообщение" maxlength="2000"></textarea>
-      <button id="sendBtn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <div class="content-inner">
+    <h1>${title}</h1>
+    <div class="post">
+      <input id="nickname" placeholder="Ваш ник" maxlength="10">
+      <div class="input-wrapper">
+        <textarea id="message" placeholder="Сообщение (с поддержкой Markdown)" maxlength="2000"></textarea>
+        <button id="sendBtn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"/>
           <path d="M6 12h16"/>
-        </svg>
-      </button>
+          </svg>
+        </button>
+      </div>
+      <div id="posts">Загрузка...</div>
     </div>
-    <div id="posts">Загрузка...</div>
   </div>
 `;
 
@@ -153,7 +155,7 @@ function openTopic(topicId, title) {
         : 'только что';
 
       const msgEl = document.createElement('p');
-      msgEl.appendChild(renderMessageWithLinks(p.message));
+      msgEl.appendChild(renderMessage(p.message));
 
       div.appendChild(numEl);
       div.appendChild(nickEl);
@@ -165,42 +167,71 @@ function openTopic(topicId, title) {
   });
 }
 
-// --- Превращение #N в кликабельную ссылку внутри текста сообщения ---
-function renderMessageWithLinks(text) {
-  const fragment = document.createDocumentFragment();
-  const regex = /#(\d+)/g;
-  let lastIndex = 0;
-  let match;
 
-  while ((match = regex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+function renderMessage(text) {
+  // 1. Markdown → HTML
+  const rawHtml = marked.parse(text, { breaks: true }); // breaks: true — одиночный перенос строки тоже станет <br>
+
+  // 2. Чистим от опасного HTML/скриптов
+  const cleanHtml = DOMPurify.sanitize(rawHtml, {
+    ALLOWED_TAGS: ['b', 'strong', 'i', 'em', 'a', 'code', 'pre', 'blockquote', 'ul', 'ol', 'li', 'p', 'br', 'h1', 'h2', 'h3'],
+    ALLOWED_ATTR: ['href']
+  });
+
+  const wrapper = document.createElement('div');
+  wrapper.innerHTML = cleanHtml;
+
+  // 3. Ищем #N внутри уже готового HTML и делаем кликабельными
+  linkifyPostRefs(wrapper);
+
+  return wrapper;
+}
+
+function linkifyPostRefs(container) {
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+  const textNodes = [];
+  let node;
+  while ((node = walker.nextNode())) textNodes.push(node);
+
+  textNodes.forEach((textNode) => {
+    const regex = /#(\d+)/g;
+    if (!regex.test(textNode.textContent)) return;
+    regex.lastIndex = 0;
+
+    const fragment = document.createDocumentFragment();
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(textNode.textContent)) !== null) {
+      if (match.index > lastIndex) {
+        fragment.appendChild(document.createTextNode(textNode.textContent.slice(lastIndex, match.index)));
+      }
+
+      const num = match[1];
+      const link = document.createElement('a');
+      link.href = `#post-${num}`;
+      link.textContent = `#${num}`;
+      link.className = 'post-ref';
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.getElementById(`post-${num}`);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          target.classList.add('highlight');
+          setTimeout(() => target.classList.remove('highlight'), 1500);
+        }
+      });
+      fragment.appendChild(link);
+
+      lastIndex = regex.lastIndex;
     }
 
-    const num = match[1];
-    const link = document.createElement('a');
-    link.href = `#post-${num}`;
-    link.textContent = `#${num}`;
-    link.className = 'post-ref';
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const target = document.getElementById(`post-${num}`);
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        target.classList.add('highlight');
-        setTimeout(() => target.classList.remove('highlight'), 1500);
-      }
-    });
-    fragment.appendChild(link);
+    if (lastIndex < textNode.textContent.length) {
+      fragment.appendChild(document.createTextNode(textNode.textContent.slice(lastIndex)));
+    }
 
-    lastIndex = regex.lastIndex;
-  }
-
-  if (lastIndex < text.length) {
-    fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
-  }
-
-  return fragment;
+    textNode.replaceWith(fragment);
+  });
 }
 
 // --- Отправка поста ---

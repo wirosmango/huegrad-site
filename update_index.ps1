@@ -1,5 +1,3 @@
-# Корень, который сканируем рекурсивно.
-# Индекс будет сгенерирован ВНУТРИ этой папки и внутри каждой её подпапки.
 $RootDir = "mods/files"
 
 function Format-Size {
@@ -17,7 +15,7 @@ function Generate-Index {
         [string]$TitlePath
     )
 
-    # Сортируем так же, как os.listdir + sorted() в Python
+    # пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ, пїЅпїЅпїЅ os.listdir + sorted() пїЅ Python
     $entries = Get-ChildItem -LiteralPath $DirPath -Force | Sort-Object Name
 
     $html = @"
@@ -27,7 +25,8 @@ function Generate-Index {
     <meta charset="UTF-8">
     <title>Index of /$TitlePath/</title>
     <style>
-        body { font-family: monospace; padding: 20px; background-color: #1e1e2e; color: #cdd6f4; }
+        body { font-family: 'JetBrains Mono'; padding: 20px; background-color: #1e1e2e; color: #cdd6f4; }
+        jetbrains-mono-<uniquifier> { font-family: "JetBrains Mono", monospace; font-optical-sizing: auto; font-weight: <weight>; font-style: normal;}
         h1 { font-size: 1.5em; font-weight: normal; }
         hr { border: 0; border-top: 1px solid #ccc; }
         a { text-decoration: none; color: #cdd6f4; }
@@ -58,7 +57,7 @@ function Generate-Index {
 
     foreach ($entry in $entries) {
         if ($entry.Name -eq "index.html") {
-            continue  # не показываем сам индекс в его же списке
+            continue  # пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         }
 
         $mtime = $entry.LastWriteTime.ToString("dd-MMM-yyyy HH:mm")
@@ -96,18 +95,18 @@ function Generate-Index {
     $outputPath = Join-Path $DirPath "index.html"
     [System.IO.File]::WriteAllText($outputPath, $html, [System.Text.Encoding]::UTF8)
 
-    Write-Host "OK: $outputPath (файлов: $filesCount, папок: $dirsCount)"
+    Write-Host "OK: $outputPath (пїЅпїЅпїЅпїЅпїЅпїЅ: $filesCount, пїЅпїЅпїЅпїЅпїЅ: $dirsCount)"
 }
 
 function Walk-AndGenerate {
     param([string]$RootDir)
 
     if (-not (Test-Path -LiteralPath $RootDir -PathType Container)) {
-        Write-Host "Ошибка: папка $RootDir не найдена!"
+        Write-Host "пїЅпїЅпїЅпїЅпїЅпїЅ: пїЅпїЅпїЅпїЅпїЅ $RootDir пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!"
         return
     }
 
-    # Сама корневая папка + все подпапки рекурсивно
+    # пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ + пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     $allDirs = @(Get-Item -LiteralPath $RootDir) + (Get-ChildItem -LiteralPath $RootDir -Recurse -Directory)
 
     foreach ($dir in $allDirs) {

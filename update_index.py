@@ -24,7 +24,8 @@ def generate_index(dir_path, title_path):
     <meta charset="UTF-8">
     <title>Index of /{title_path}/</title>
     <style>
-        body {{ font-family: monospace; padding: 20px; background-color: #1e1e2e; color: #cdd6f4; }}
+        body {{ font-family: 'JetBrains Mono'; padding: 20px; background-color: #1e1e2e; color: #cdd6f4; }}
+        jetbrains-mono-<uniquifier> {{ font-family: "JetBrains Mono", monospace; font-optical-sizing: auto; font-weight: <weight>; font-style: normal; }}
         h1 {{ font-size: 1.5em; font-weight: normal; }}
         hr {{ border: 0; border-top: 1px solid #ccc; }}
         a {{ text-decoration: none; color: #cdd6f4; }}
