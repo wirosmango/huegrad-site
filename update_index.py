@@ -4,7 +4,7 @@ import time
 
 # Корень, который сканируем рекурсивно.
 # Индекс будет сгенерирован ВНУТРИ этой папки и внутри каждой её подпапки.
-ROOT_DIR = "mods"
+ROOT_DIR = "mods/files"
 
 
 def format_size(size_bytes):
