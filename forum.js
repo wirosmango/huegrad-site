@@ -97,7 +97,11 @@ function openTopic(topicId, title) {
           </svg>
         </button>
       </div>
-      <div id="posts">Загрузка...</div>
+      <div id="posts">
+        <div class="spinner-wrap">
+          <div class="spinner"></div>
+        </div>
+      </div>
     </div>
   </div>
 `;
@@ -174,8 +178,8 @@ function renderMessage(text) {
 
   // 2. Чистим от опасного HTML/скриптов
   const cleanHtml = DOMPurify.sanitize(rawHtml, {
-    ALLOWED_TAGS: ['b', 'strong', 'i', 'em', 'a', 'code', 'pre', 'blockquote', 'ul', 'ol', 'li', 'p', 'br', 'h1', 'h2', 'h3'],
-    ALLOWED_ATTR: ['href']
+    ALLOWED_TAGS: ['b', 'strong', 'i', 'em', 'a', 'code', 'pre', 'blockquote', 'ul', 'ol', 'li', 'p', 'br', 'h1', 'h2', 'h3', 'img'],
+    ALLOWED_ATTR: ['href', 'src', 'alt']
   });
 
   const wrapper = document.createElement('div');
@@ -240,18 +244,27 @@ async function sendPost() {
 
   const nicknameInput = document.getElementById('nickname');
   const messageInput = document.getElementById('message');
+  const sendBtn = document.getElementById('sendBtn');
   const nickname = nicknameInput.value.trim();
   const message = messageInput.value.trim();
   if (!nickname || !message) return;
 
-  await addDoc(postsRef, {
-    topicId: currentTopicId,
-    nickname: nickname.slice(0, 30),
-    message: message.slice(0, 2000),
-    createdAt: serverTimestamp()
-  });
+  const originalContent = sendBtn.innerHTML;
+  sendBtn.innerHTML = '<div class="spinner" style="width:18px;height:18px;border-width:2px;"></div>';
+  sendBtn.disabled = true;
 
-  messageInput.value = '';
+  try {
+    await addDoc(postsRef, {
+      topicId: currentTopicId,
+      nickname: nickname.slice(0, 30),
+      message: message.slice(0, 2000),
+      createdAt: serverTimestamp()
+    });
+    messageInput.value = '';
+  } finally {
+    sendBtn.innerHTML = originalContent;
+    sendBtn.disabled = false;
+  }
 }
 
 // --- Если страница открыта сразу по ссылке ?id=... ---
