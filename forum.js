@@ -85,26 +85,37 @@ function openTopic(topicId, title) {
 
   content.innerHTML = `
   <div class="content-inner">
-    <h1>${title}</h1>
+    <div class="topic-header">
+      <h1>${title}</h1>
+      <button class="topics-toggle-btn" id="topicsToggleBtn" aria-label="Темы">☰</button>
+    </div>
     <div class="post">
-      <input id="nickname" placeholder="Ваш ник" maxlength="10">
+      <input id="nickname" placeholder="Ваш ник" maxlength="30">
       <div class="input-wrapper">
-        <textarea id="message" placeholder="Сообщение (с поддержкой Markdown)" maxlength="2000"></textarea>
+        <textarea id="message" placeholder="Сообщение" maxlength="2000"></textarea>
         <button id="sendBtn">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"/>
-          <path d="M6 12h16"/>
+            <path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"/>
+            <path d="M6 12h16"/>
           </svg>
         </button>
       </div>
-      <div id="posts">
-        <div class="spinner-wrap">
-          <div class="spinner"></div>
-        </div>
-      </div>
+      <div id="posts">Загрузка...</div>
     </div>
   </div>
 `;
+
+// заново навешиваем обработчик, т.к. кнопка пересоздаётся при каждом openTopic
+const topicsToggleBtn = document.getElementById('topicsToggleBtn');
+  const sidebar = document.getElementById('sidebar');
+
+  if (topicsToggleBtn && sidebar) {
+    topicsToggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+  }
+
+  if (sidebar) sidebar.classList.remove('active');
 
   document.getElementById('sendBtn').addEventListener('click', sendPost);
 

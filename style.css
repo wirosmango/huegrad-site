@@ -458,7 +458,7 @@ a:hover {
   border-radius: 50%;
   cursor: pointer;
   border: none;
-  background: #1e1e2e;
+  background: #6366f1;
   color: white;
 }
 
@@ -526,6 +526,37 @@ input-wrapper button:hover {
   border-radius: 5px;
 }
 
+.topic-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topic-header h1 {
+  margin: 0;
+}
+
+.topics-toggle-btn {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #1e1e2e;
+  color: #cdd6f4;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  border: none;
+}
+
+.topics-toggle-btn:hover {
+  background: #6366f1;
+}
+
 .content {
   flex: 1;
   padding: 20px;
@@ -539,7 +570,7 @@ input-wrapper button:hover {
   color: #ffffff;
   border: 3px solid #cfc6a6;
   margin: 2%;
-  padding: 0 5%;
+  padding: 0 5%;topic-
 }
 
 .announcement-happy {
@@ -616,18 +647,6 @@ input-wrapper button:hover {
   min-height: 18px;
 }
 
-.topics-toggle-btn {
-  display: none;
-  width: 100%;
-  padding: 10px;
-  background: #1e1e2e;
-  color: #cdd6f4;
-  border: 1px solid #585887;
-  cursor: pointer;
-  font-size: 15px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-}
 
 .spinner {
   display: inline-block;
@@ -700,7 +719,9 @@ input-wrapper button:hover {
     ;
   }
   .topics-toggle-btn {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .layout {
