@@ -42,6 +42,14 @@
             <source src="../media/tank.mp4" type="video/mp4">
         </video>
     </div>
+    <div class="news-comments">
+        <div id="comments-container"></div>
+        
+        <script type="module">
+            import { initComments } from "../comments.js";
+            initComments("tank-1", "comments-container");
+        </script>
+    </div>
 
     <script>
         const burgerBtn = document.getElementById('burgerBtn');

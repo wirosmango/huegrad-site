@@ -44,9 +44,18 @@
             Кто знает, достроят ли метро в будущем?.. Может даже к концу года..</p>
 
         <!-- А картинок не буде, идите нахуй :P -->
+        <!-- А быть может и буде, если вспомню и не заебусь-->
 
         <p class="footer">Хуеград™, все права защищены <span style="font-size: 6px;">(нет)</span></p>
 
+    </div>
+    <div class="news-comments">
+        <div id="comments-container"></div>
+        
+        <script type="module">
+            import { initComments } from "../comments.js";
+            initComments("metro-1", "comments-container");
+        </script>
     </div>
 
     <script>

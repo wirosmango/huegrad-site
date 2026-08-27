@@ -65,6 +65,14 @@
             </div>
         </div>
     </div>
+    <div class="news-comments">
+        <div id="comments-container"></div>
+        
+        <script type="module">
+            import { initComments } from "../comments.js";
+            initComments("elections-2", "comments-container");
+        </script>
+    </div>
 
     <script>
         new Glide('.glide', {

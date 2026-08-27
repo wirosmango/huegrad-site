@@ -171,6 +171,17 @@ body {
     width: auto;
 }
 
+.news-comments {
+  margin-top: 3px;
+  margin-left: 20%;
+  margin-right: 20%;
+  border: 2px solid #b4b4ee;
+  background: #1e1e2e;
+  padding: 2% 2%;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
 .cards-container {
   display: flex;
   /* Включаем Flexbox */
@@ -466,6 +477,15 @@ input-wrapper button:hover {
   background: #6366f1;
 }
 
+.md-content p { margin: 0; }
+.md-content a { color: #4ea1ff; text-decoration: underline; }
+.md-content code { 
+  background: #313244;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: JetBrains Mono;
+}
+
 .layout {
   display: flex;
   height: 100vh;
@@ -707,6 +727,18 @@ input-wrapper button:hover {
     box-sizing: border-box;
   }
 
+  .news-comments {
+    max-width: 900px;
+    width: 90%;
+    margin: 30px auto;
+    padding: 2rem;
+    border: 2px solid #b4b4ee;
+    background: #1e1e2e;
+    box-sizing: border-box;
+    margin-top: 3px;
+    box-sizing: border-box;
+    border-radius: 5px;
+  }
   header {
     background-image: url(media/huegrad-phone-banner.png);
     padding: 10px;
@@ -730,9 +762,9 @@ input-wrapper button:hover {
 
   .sidebar {
     position: fixed;
-    top: 0;
+    bottom: 0;
     left: 0;
-    height: 100vh;
+    height: 90%;
     width: 100%;
     z-index: 25;
     background-color: #1e1e2e;

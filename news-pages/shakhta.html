@@ -3,7 +3,7 @@
 <html>
 
 <head>
-    <title>Сервер восстановлен!</title>
+    <title>Построена шахта на горе Дилдаковская</title>
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="../media/пиздюк.jpg">
     <link href="../style.css" rel="stylesheet" />
@@ -39,15 +39,40 @@
 
 
     <div class="news">
-        <h1>Сервер восстановлен!</h1>
-        <p>Игрок Pabalo666 арендовал новый VDS сервер на 3 месяца. Теперь Хуеград, как и весь сервер, ждут 
-           3 месяца спокойного развития и процветания (Или ебанутой анархии из шахедов и ядерок. by PurityMind)
+        <h1>Построена шахта на горе Дилдаковская</h1>
+        <p>25 августа была построена шахта на горе Дилдаковская. В шахте добываются алмазы, серебро,
+        железо, уголь и медь, которые в скором времени будут использоваться в промышленности Хуеграда.<br>
+        Руководство будущего Хуеградского Металлургического Завода набирает работящих людей для работы в шахте.
+        В шахте есть комната отдыха, где можно отдохнуть и перекусить, для тех кто забрался по выше есть ещё один домик для отдыха. 
+        Для удобного перемещения по горе построен лифт.
         </p>
+        
         <div class="glide">
             <div class="glide__track" data-glide-el="track">
                 <ul class="glide__slides">
                     <li class="glide__slide">
-                        <img src="../media/newservak.jpg">
+                        <img src="../media/shakhta1.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="../media/shakhta2.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="../media/shakhta3.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="../media/shakhta4.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="../media/shakhta5.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="../media/shakhta6.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="../media/shakhta7.png">
+                    </li>
+                    <li class="glide__slide">
+                        <img src="../media/shakhta8.png">
                     </li>
                 </ul>
             </div>
@@ -58,12 +83,16 @@
         
         <script type="module">
             import { initComments } from "../comments.js";
-            initComments("newservak-1", "comments-container");
+            initComments("shakhta-1", "comments-container");
         </script>
     </div>
 
     <script>
-        new Glide('.glide').mount();
+        new Glide('.glide', {
+                type: 'carousel',
+                autoplay: 3500,
+                hoverpause: true
+            }).mount();
     </script>
 
     <script>
@@ -77,5 +106,5 @@
     </script>
 
 </body>
+
 </html>
-        

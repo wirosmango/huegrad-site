@@ -1,9 +1,9 @@
 // 1. Импорты
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
   getFirestore, collection, addDoc, doc, getDoc,
   query, where, orderBy, onSnapshot, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
 // 2. Конфиг
 const firebaseConfig = {
@@ -16,8 +16,7 @@ const firebaseConfig = {
 };
 
 // 3. Инициализация
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import { db } from "./firebase-config.js";
 
 // 4. Ссылки на коллекции
 const postsRef = collection(db, "posts");
@@ -41,10 +40,19 @@ async function createTopic() {
   openTopic(docRef.id, title);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const createBtn = document.getElementById('createTopicBtn');
-  if (createBtn) createBtn.addEventListener('click', createTopic);
-});
+
+const createBtn = document.getElementById('createTopicBtn');
+if (createBtn) createBtn.addEventListener('click', createTopic);
+
+const initialToggleBtn = document.getElementById('topicsToggleBtn');
+const sidebar = document.getElementById('sidebar');
+if (initialToggleBtn && sidebar) {
+  initialToggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+  });
+}
+
+
 
 // --- Список тем в сайдбаре ---
 const topicsQuery = query(topicsRef, orderBy("createdAt", "desc"));

@@ -65,8 +65,15 @@
                 hoverpause: true
             }).mount();
         </script>
-
         <p class="footer">Хуеград™, все права защищены <span style="font-size: 6px;">(нет)</span></p>
+    </div>
+    <div class="news-comments">
+        <div id="comments-container"></div>
+        
+        <script type="module">
+            import { initComments } from "../comments.js";
+            initComments("shokla-1", "comments-container");
+        </script>
     </div>
 
     <script>

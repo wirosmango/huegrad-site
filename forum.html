@@ -46,7 +46,10 @@
       </aside>
       
       <main class="content" id="content">
-        <h1>Выберите тему</h1>
+        <div class="topic-header">
+          <h1>Выберите тему</h1>
+          <button class="topics-toggle-btn" id="topicsToggleBtn" aria-label="Темы">☰</button>
+        </div>
       </main>
     </div>
 
@@ -60,23 +63,5 @@
             topMenu.classList.toggle('active');
         });
   </script>
-  <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          const topicsToggleBtn = document.getElementById('topicsToggleBtn');
-          const sidebar = document.getElementById('sidebar');
-          
-          if (topicsToggleBtn && sidebar) {
-            topicsToggleBtn.addEventListener('click', () => {
-              sidebar.classList.toggle('active');
-          });
-          
-          sidebar.addEventListener('click', (e) => {
-            if (e.target.classList.contains('topic-item')) {
-              sidebar.classList.remove('active');
-            }
-          });
-        }
-      });
-  </script> 
 </body>
 </html>
