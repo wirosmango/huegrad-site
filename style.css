@@ -333,8 +333,8 @@ a:hover {
   margin: 0 auto;
 }
 
-.post { 
-  padding: 10px 0; 
+.post {
+  padding: 10px 0;
 }
 .post input {
   width: 100%;
@@ -358,7 +358,7 @@ a:hover {
   box-sizing: border-box;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
-.post b { 
+.post b {
   background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
   /* Делаем фоновое изображение в 4 раза больше контейнера */
   background-size: 400% 400%;
@@ -369,13 +369,13 @@ a:hover {
   -webkit-text-fill-color: transparent;
   color: transparent;
 }
-.post small { 
-  color: #888; 
-  margin-left: 8px; 
+.post small {
+  color: #888;
+  margin-left: 8px;
 }
-.post p { 
-  margin: 5px 0 0; 
-  white-space: pre-wrap; 
+.post p {
+  margin: 5px 0 0;
+  white-space: pre-wrap;
 }
 
 .post-number {
@@ -400,7 +400,7 @@ a:hover {
 
 .post.highlight {
   background: #cdd6f4;
-  transition: background 0.3s ease;
+  transition: background 0.4s ease;
   color: #1e1e2e;
   padding: 2%;
   border-radius: 5px;
@@ -479,11 +479,35 @@ input-wrapper button:hover {
 
 .md-content p { margin: 0; }
 .md-content a { color: #4ea1ff; text-decoration: underline; }
-.md-content code { 
+.md-content code {
   background: #313244;
   padding: 2px 6px;
   border-radius: 4px;
   font-family: JetBrains Mono;
+}
+
+.like-btn {
+  background: none;
+  border: 1px solid #585887;
+  border-radius: 20px;
+  color: #cdd6f4;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 6px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.like-btn:hover:not(:disabled) {
+  border-color: #ee7752;
+  color: #ee7752;
+}
+
+.like-btn:disabled {
+  color: #ee7752;
+  border-color: #ee7752;
+  cursor: default;
+  opacity: 0.8;
 }
 
 .layout {
@@ -531,19 +555,33 @@ input-wrapper button:hover {
   text-decoration: none;
   color: #cdd6f4;
   margin-bottom: 2px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  position: relative;
+  transition: background 0.15s ease;
 }
 
 .topic-item:hover {
-  background: #f3f4f6;
-  color: #2563eb;
-  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #cdd6f4;
 }
 
 .topic-item.active {
-  background: #dbeafe;
-  color: #2563eb;
-  font-weight: bold;
-  border-radius: 5px;
+  background: rgba(99, 102, 241, 0.15);
+  color: #cdd6f4;
+  font-weight: 600;
+}
+
+.topic-item.active::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: #6366f1;
+  border-radius: 3px;
 }
 
 .topic-header {

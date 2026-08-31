@@ -1,9 +1,14 @@
 // 1. Импорты
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
-  getFirestore, collection, addDoc, doc, getDoc,
-  query, where, orderBy, onSnapshot, serverTimestamp
+  getFirestore, collection, addDoc, doc, getDoc, setDoc, deleteDoc,
+  query, where, orderBy, onSnapshot, serverTimestamp,
+  updateDoc, increment, runTransaction
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+import {
+  getAuth, signInAnonymously, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
 
 // 2. Конфиг
 const firebaseConfig = {
@@ -16,9 +21,16 @@ const firebaseConfig = {
 };
 
 // 3. Инициализация
-import { db } from "./firebase-config.js";
+// import { db } from "./firebase-config.js";
 
-// 4. Ссылки на коллекции
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 4. Auth — использует app, поэтому идёт ПОСЛЕ его создания
+const auth = getAuth(app);
+let currentUserId = null;
+
+// 5. Ссылки на коллекции
 const postsRef = collection(db, "posts");
 const topicsRef = collection(db, "topics");
 
@@ -79,8 +91,21 @@ onSnapshot(topicsQuery, (snapshot) => {
   });
 });
 
+let authReadyResolve;
+const authReady = new Promise((resolve) => { authReadyResolve = resolve; });
+
+signInAnonymously(auth).catch((err) => console.error('Ошибка анонимного входа:', err));
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    currentUserId = user.uid;
+    authReadyResolve(); // сигнализируем, что можно продолжать
+  }
+});
 // --- Открытие темы (без перезагрузки страницы) ---
-function openTopic(topicId, title) {
+async function openTopic(topicId, title) {
+  await authReady;
+
   currentTopicId = topicId;
   history.pushState({}, '', `?id=${topicId}`);
 
@@ -112,7 +137,6 @@ function openTopic(topicId, title) {
     </div>
   </div>
 `;
-
 // заново навешиваем обработчик, т.к. кнопка пересоздаётся при каждом openTopic
 const topicsToggleBtn = document.getElementById('topicsToggleBtn');
   const sidebar = document.getElementById('sidebar');
@@ -152,6 +176,7 @@ const topicsToggleBtn = document.getElementById('topicsToggleBtn');
     [...docs].reverse().forEach((docSnap, i) => {
       const p = docSnap.data();
       const number = total - i;
+      const postId = docSnap.id;
 
       const div = document.createElement('div');
       div.className = 'post';
@@ -160,7 +185,6 @@ const topicsToggleBtn = document.getElementById('topicsToggleBtn');
       const numEl = document.createElement('span');
       numEl.className = 'post-number';
       numEl.textContent = `#${number}`;
-
       numEl.addEventListener('click', () => {
         const messageInput = document.getElementById('message');
         if (messageInput) {
@@ -180,15 +204,30 @@ const topicsToggleBtn = document.getElementById('topicsToggleBtn');
       const msgEl = document.createElement('p');
       msgEl.appendChild(renderMessage(p.message));
 
+      // --- Кнопка лайка ---
+      const likeBtn = document.createElement('button');
+      likeBtn.className = 'like-btn';
+      likeBtn.innerHTML = `❤ <span>${p.likes || 0}</span>`;
+      likeBtn.disabled = true;
+
+      if (currentUserId) {
+        getDoc(doc(db, "posts", postId, "likes", currentUserId)).then((snap) => {
+          likeBtn.disabled = snap.exists();
+        });
+      }
+
+      likeBtn.addEventListener('click', () => likePost(postId, likeBtn));
+
       div.appendChild(numEl);
       div.appendChild(nickEl);
       div.appendChild(dateEl);
       div.appendChild(msgEl);
+      div.appendChild(likeBtn);
 
       container.appendChild(div);
     });
   });
-}
+};
 
 
 function renderMessage(text) {
@@ -277,12 +316,45 @@ async function sendPost() {
       topicId: currentTopicId,
       nickname: nickname.slice(0, 30),
       message: message.slice(0, 2000),
-      createdAt: serverTimestamp()
+      createdAt: serverTimestamp(),
+      likes: 0
     });
     messageInput.value = '';
   } finally {
     sendBtn.innerHTML = originalContent;
     sendBtn.disabled = false;
+  }
+}
+
+function getLikedPosts() {
+  return JSON.parse(localStorage.getItem('likedPosts') || '[]');
+}
+
+function markPostAsLiked(postId) {
+  const liked = getLikedPosts();
+  liked.push(postId);
+  localStorage.setItem('likedPosts', JSON.stringify(liked));
+}
+
+async function likePost(postId, btnEl) {
+  if (!currentUserId) return; // ещё не авторизовались анонимно, подождите
+
+  const likeRef = doc(db, "posts", postId, "likes", currentUserId);
+  const postRef = doc(db, "posts", postId);
+
+  btnEl.disabled = true;
+
+  try {
+    await runTransaction(db, async (transaction) => {
+      const likeSnap = await transaction.get(likeRef);
+      if (likeSnap.exists()) return; // уже лайкал — выходим молча
+
+      transaction.set(likeRef, { likedAt: serverTimestamp() });
+      transaction.update(postRef, { likes: increment(1) });
+    });
+  } catch (err) {
+    console.error('Ошибка при лайке:', err);
+    btnEl.disabled = false;
   }
 }
 
