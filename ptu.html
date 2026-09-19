@@ -1,182 +1,176 @@
 <!DOCTYPE html>
-
+<html>
 <head>
-    <title>ПТУ для ебланов №67</title>
+    <title>ПТУ №67 — Хуеград</title>
     <meta charset="utf-8" />
-    <link href="./style.css" rel="stylesheet" type="text/css" />
-    <link rel="icon" type="image/png" href="media/пиздюк.jpg">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/css/glide.core.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+    <link rel="icon" type="image/png" href="media/пиздюк.jpg">
+    <link href="./style.css" rel="stylesheet" type="text/css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<html>
-
-<body>
-    <header>
-        <button class="backtohome">
-            <a href="index.html"><h1>Хуеград</h1></a>
+<body data-page="obrazovanie">
+    <div class="nav-backdrop" id="navBackdrop"></div>
+    <nav class="nav-view" id="navView">
+        <a href="index.html" class="nav-view-item" data-page="home">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Главная</span>
+        </a>
+        <a href="drochka.html" class="nav-view-item" data-page="drochka">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>Дрочка</span>
+        </a>
+        <a href="mods/" class="nav-view-item" data-page="mods">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span>Доп. ресурсы</span>
+        </a>
+        <a href="news.html" class="nav-view-item" data-page="news">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg>
+            <span>Новости</span>
+        </a>
+        <a href="history.html" class="nav-view-item" data-page="history">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>История Хуеграда</span>
+        </a>
+        <a href="obrazovanie.html" class="nav-view-item" data-page="obrazovanie">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1 2 3 6 3s6-2 6-3v-5"/></svg>
+            <span>Образование в Хуеграде</span>
+        </a>
+        <a href="pizdjuk.html" class="nav-view-item" data-page="pizdjuk">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Пиздюк</span>
+        </a>
+        <a href="forum.html" class="nav-view-item" data-page="forum">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Форум</span>
+        </a>
+    </nav>
+    <div class="title-bar" id="titleBar">
+        <button class="nav-toggle" id="navToggle" aria-label="Меню">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
-        <button class="burger-btn" id="burgerBtn" aria-label="Меню">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <nav class="top-menu" id="topMenu">
-            <a href="index.html">Главная</a>
-            <a href="drochka.html">Дрочка</a>
-            <a href="mods/">Доп. ресурсы</a>
-            <a href="news.html">Новости</a>
-            <a href="history.html">История Хуеграда</a>
-            <a href="obrazovanie.html">Образование в Хуеграде</a>
-            <a href="pizdjuk.html">Пиздюк</a>
-            <a href="forum.html">Форум</a>
-        </nav>
-    </header>
-    <div class="title">
-        <h1 class="animated-gradient">ПТУ для ебланов №67</h1>
+        <span class="title-bar-text">Хуеград</span>
     </div>
-    <div class="news">
-        <h2>Добро пожаловать на страницу ПТУ для ебланов №67!</h2>
-        <p>Здесь вы найдете всю информацию о нашем замечательном ПТУ.</p>
+    <main class="content" id="mainContent">
+        <h1 class="page-title">ПТУ для ебланов №67</h1>
+        <div class="cards-container">
+        <div class="card">
+            <h2 class="section-title">Добро пожаловать!</h2>
+            <p>Здесь вы найдете всю информацию о нашем замечательном ПТУ.</p>
+            <p>ПТУ для ебланов №67 — лучшее учебное заведение для деревенских. Только здесь обучают действительно нужным вещам:</p>
+            <ul style="list-style: disc; padding-left: 24px; background: none; border: none; border-radius: 0;">
+                <li>как правильно клеить наклейки #села-дала;</li>
+                <li>учат пацанским понятиям и воздуханству;</li>
+                <li>а также изучают сёла и деревни</li>
+            </ul>
+        </div>
+        </div>
 
-        <p><b>ПТУ для ебланов №67</b> - лучшее учебное заведение для деревенских.<br>
-            Только здесь обучают действительно нужным вещам для деревенских:
-        <ul style="background-color: #585b70; color: #cdd6f4;">
-            <li>как правильно клеить наклейки #села-дала;</li>
-            <li>учат пацанским понятиям и воздуханству;</li>
-            <li>а также изучают сёла и деревни</li>
-        </ul>
-        </p>
-        <h2>Фото ПТУ</h2>
         <div class="mellstroj">
+            <h2 class="section-title">Красоты Хуеграда</h2>
             <div class="glide">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide">
-                            <img src="media/ptu1.png">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu2.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu3.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu4.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu5.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu6.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu7.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu8.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu9.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu10.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu11.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu12.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu13.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu14.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu15.jpg">
-                        </li>
-                        <li class="glide__slide">
-                            <img src="media/ptu16.jpg">
-                        </li>
+                        <li class="glide__slide"><img src="media/huegrad.jpg" alt=""></li>
+                        <li class="glide__slide"><img src="media/zovcorp1.jpg" alt=""></li>
+                        <li class="glide__slide"><img src="media/zovcorp2.jpg" alt=""></li>
+                        <li class="glide__slide"><img src="media/PTU.png" alt="ptu dlya eblanov"></li>
+                        <li class="glide__slide"><img src="media/dildovoz.png" alt="poezd"></li>
+                        <li class="glide__slide"><img src="media/dom_rusika.png" alt="dom rusika rozebali"></li>
+                        <li class="glide__slide"><img src="media/PIZDA.png" alt="polneishaya pizda"></li>
+                        <li class="glide__slide"><img src="media/banya.png" alt=""></li>
+                        <li class="glide__slide"><img src="media/bayna2.png" alt=""></li>
                     </ul>
+                </div>
+                <div class="glide__arrows" data-glide-el="controls">
+                    <button class="glide__arrow glide__arrow--left" data-glide-dir="&lt;">&lsaquo;</button>
+                    <button class="glide__arrow glide__arrow--right" data-glide-dir="&gt;">&rsaquo;</button>
+                </div>
+                <div class="glide__bullets" data-glide-el="controls[nav]"></div>
+            </div>
+        </div>
+
+        <div class="cards-container">
+        <div class="card">
+            <h2 class="section-title">Программы обучения</h2>
+            <p>Мы предлагаем широкий выбор программ обучения, включая:</p>
+            <div class="cards-container" style="margin-top: 16px;">
+                <div class="card">
+                    <h3>Амбасадор #селадала</h3>
+                    <p>Обучение колхозному уродованию транспортных средств и правильному использованию наклеек #села-дала</p>
+                </div>
+                <div class="card">
+                    <h3>Воздуханство</h3>
+                    <p>Обучение воздуханству, включая правильное использование воздуханских слов и навыков общения с другими воздуханами</p>
+                </div>
+                <div class="card">
+                    <h3>Мегадеревенщина</h3>
+                    <p>Изучение истории и культуры сёл и деревень, включая пацанские обычаи в сёлах и их развитие</p>
                 </div>
             </div>
         </div>
-        <h2>Программы обучения</h2>
-        <p>Мы предлагаем широкий выбор программ обучения, включая:</p>
-        <ul style="background-color: #585b70; color: #cdd6f4;">
-            <li>Программу "Амбасадор #селадала" - обучение колхозному уродованию транспортных средств и правильному
-                использованию наклеек #села-дала;</li>
-            <li>Программу "Воздуханство" - обучение воздуханству, включая правильное использование воздуханских слов и
-                навыков общения с другими воздуханами;</li>
-            <li>Программу "Мегадеревенщина" - изучение истории и культуры сёл и деревень, включая пацанские обычаи в
-                сёлах и их развитие</li>
-        </ul>
-        <h2>Поступление</h2>
-        <p>Если вы хотите поступить в ПТУ для ебланов №67, пожалуйста, заполните нашу онлайн-заявку на поступление. Мы
-            свяжемся с вами в ближайшее время, чтобы обсудить ваш запрос и предоставить дополнительную информацию о
-            наших программах обучения.</p>
-        <p>Мы рады приветствовать вас в ПТУ для ебланов №67 и надеемся, что вы найдете здесь все необходимое для
-            "успешного" обучения.</p>
-        <div class="form-container">
-            <h2 class="animated-gradient">Анкета</h2>
-            <form id="myForm">
-                <div class="form-group">
+
+        <div class="card">
+            <h2 class="section-title">Поступление</h2>
+            <p>Если вы хотите поступить в ПТУ для ебланов №67, пожалуйста, заполните нашу онлайн-заявку на поступление. Мы свяжемся с вами в ближайшее время.</p>
+            <p>Мы рады приветствовать вас в ПТУ для ебланов №67 и надеемся, что вы найдете здесь все необходимое для успешного обучения.</p>
+            <div class="card" style="max-width: 700px; margin: 0 auto;">
+              <h2 class="animated-gradient">Анкета для поступления</h2>
+
+              <div class="form-container">
+                <form id="myForm">
+                  <div class="form-group">
                     <input type="text" name="name" placeholder="Имя" required>
-                </div>
-                <div class="form-group">
+                  </div>
+                  <div class="form-group">
                     <input type="email" name="email" placeholder="Почта" required>
-                </div>
-                <div class="form-group">
-                    <input type="text" name="answer" placeholder="Докажите что вы деревенский">
-                </div>
-                <button type="submit" class="submit-btn">Отправить</button>
-            </form>
-            <p id="status"></p>
+                  </div>
+                  <div class="form-group">
+                    <input type="text" name="answer" placeholder="Докажите что вы деревенский" required>
+                  </div>
+                  <button type="submit" class="submit-btn">Отправить заявку</button>
+                </form>
+                <p id="status"></p>
+              </div>
+            </div>
         </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <p>Хуеград&trade;, все права защищены <span style="font-size: 6px;">(нет)</span></p>
+    </footer>
+    <script>
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw2Uz6QgtjzH0dPrihCYqnq10tf1sUcaNt9XkgDgibr5uJ8cjmP84cjbxVzQ6Q1qHLgxw/exec";
 
-        <script>
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw2Uz6QgtjzH0dPrihCYqnq10tf1sUcaNt9XkgDgibr5uJ8cjmP84cjbxVzQ6Q1qHLgxw/exec";
-            document.getElementById('myForm').addEventListener('submit', function (e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                const data = Object.fromEntries(formData);
+      // Проверка, существует ли форма, чтобы не было ошибок, если формы нет на других страницах
+      const form = document.getElementById('myForm');
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          const data = Object.fromEntries(formData);
 
-                fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(data),
-                    headers: { 'Content-Type': 'text/plain' } // важно: text/plain, иначе будет CORS preflight ошибка
-                })
-                    .then(res => res.json())
-                    .then(() => {
-                        document.getElementById('status').textContent = 'Отправлено!';
-                        this.reset();
-                    })
-                    .catch(err => {
-                        document.getElementById('status').textContent = 'Ошибка отправки';
-                    });
-            });
-            new Glide('.glide').mount();
-            document.querySelectorAll('.glide').forEach((el) => {
-                new Glide(el).mount();
-            });
-        </script>
+          fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'text/plain' }
+          })
+          .then(res => res.json())
+          .then(() => {
+            document.getElementById('status').textContent = 'Отправлено! Ожидайте ответа.';
+            this.reset();
+          })
+          .catch(err => {
+            document.getElementById('status').textContent = 'Ошибка отправки. Попробуй еще раз.';
+            console.error('Error:', err);
+          });
+        });
+      }
+    </script>
 
-        <script>
-            const burgerBtn = document.getElementById('burgerBtn');
-            const topMenu = document.getElementById('topMenu');
-
-            burgerBtn.addEventListener('click', () => {
-                burgerBtn.classList.toggle('active');
-                topMenu.classList.toggle('active');
-            });
-        </script>
-
+    <script src="./nav.js"></script>
 </body>
-
 </html>

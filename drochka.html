@@ -1,78 +1,81 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>Дрочка</title>
+    <title>Дрочка — Хуеград</title>
     <meta charset="utf-8" />
     <link rel="icon" type="image/png" href="media/пиздюк.jpg">
     <link href="./style.css" rel="stylesheet" type="text/css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-
-<body>
-    <header>
-        <button class="backtohome">
-            <a href="index.html"><h1>Хуеград</h1></a>
+<body data-page="drochka">
+    <div class="nav-backdrop" id="navBackdrop"></div>
+    <nav class="nav-view" id="navView">
+        <a href="index.html" class="nav-view-item" data-page="home">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Главная</span>
+        </a>
+        <a href="drochka.html" class="nav-view-item" data-page="drochka">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>Дрочка</span>
+        </a>
+        <a href="mods/" class="nav-view-item" data-page="mods">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span>Доп. ресурсы</span>
+        </a>
+        <a href="news.html" class="nav-view-item" data-page="news">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8z"/></svg>
+            <span>Новости</span>
+        </a>
+        <a href="history.html" class="nav-view-item" data-page="history">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>История Хуеграда</span>
+        </a>
+        <a href="obrazovanie.html" class="nav-view-item" data-page="obrazovanie">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1 2 3 6 3s6-2 6-3v-5"/></svg>
+            <span>Образование в Хуеграде</span>
+        </a>
+        <a href="pizdjuk.html" class="nav-view-item" data-page="pizdjuk">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Пиздюк</span>
+        </a>
+        <a href="forum.html" class="nav-view-item" data-page="forum">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Форум</span>
+        </a>
+    </nav>
+    <div class="title-bar" id="titleBar">
+        <button class="nav-toggle" id="navToggle" aria-label="Меню">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
-        <button class="burger-btn" id="burgerBtn" aria-label="Меню">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <nav class="top-menu" id="topMenu">
-            <a href="index.html">Главная</a>
-            <a href="drochka.html">Дрочка</a>
-            <a href="mods/">Доп. ресурсы</a>
-            <a href="news.html">Новости</a>
-            <a href="history.html">История Хуеграда</a>
-            <a href="obrazovanie.html">Образование в Хуеграде</a>
-            <a href="pizdjuk.html">Пиздюк</a>
-            <a href="forum.html">Форум</a>
-        </nav>
-    </header>
-
-    <div class="drochka">
-        <h1>Дрочка</h1>
+        <span class="title-bar-text">Хуеград</span>
+    </div>
+    <main class="content" id="mainContent">
+        <h1 class="page-title">Дрочка</h1>
         <p>Выберите игрока с которым можно подрочить на что-то</p>
-        <div class="cards-container">
+        <div class="cards-row" style="margin-top: 24px;">
             <div class="card">
-                <img src="media/rusik.png">
                 <h3>ruzlan_b560m_h</h3>
                 <p>Очень любит фембоев, а также ситлали, жиресу и коломбину</p>
+                <img src="media/rusik.png">
             </div>
             <div class="card">
-                <img src="media/xiner.png">
                 <h3>pur1tym1nd</h3>
                 <p>Ооооооочень любит кошачьих и тралэфасi, меймей, далбаеб конченый, LaTeX, ZIG, а также шиндофоны</p>
+                <img src="media/xiner.png">
             </div>
             <div class="card">
-                <img src="media/wirozzz.png">
                 <h3>wiros229</h3>
-                <p>Любит наналли, бат и <span style="font-size: 5px;">пидоров с огромными сисяндрами</span></p>
-            </div>
-            <div class="card">
-                <img src="media/artjom.png">
-                <h3>Pabalo666</h3>
-                <p>Любит тёмного zоника, прям обожает сука дрочит постоянно, а ещё трахает старые дильдофончики перед
-                    продажей</p>
+                <p>Любит наналли, бат и пидоров с огромными сисяндрами</p>
+                <img src="media/wirozzz.png">
             </div>
         </div>
-    </div>
-    <p>Хуеград™, все права защищены <span style="font-size: 6px;">(нет)</span></p>
-
-    <script>
-        const burgerBtn = document.getElementById('burgerBtn');
-        const topMenu = document.getElementById('topMenu');
-
-        burgerBtn.addEventListener('click', () => {
-            burgerBtn.classList.toggle('active');
-            topMenu.classList.toggle('active');
-        });
-    </script>
-
+    </main>
+    <footer class="footer">
+        <p>Хуеград&trade;, все права защищены <span style="font-size: 6px;">(нет)</span></p>
+    </footer>
+    <script src="./nav.js"></script>
 </body>
-
 </html>
