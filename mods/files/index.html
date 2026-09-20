@@ -5,17 +5,57 @@
     <title>Index of /files/</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: 'JetBrains Mono'; padding: 20px; background-color: #1e1e2e; color: #cdd6f4; }
-        jetbrains-mono-<uniquifier> { font-family: "JetBrains Mono", monospace; font-optical-sizing: auto; font-weight: <weight>; font-style: normal;}
-        h1 { font-size: 1.5em; font-weight: normal; }
-        hr { border: 0; border-top: 1px solid #ccc; }
-        a { text-decoration: none; color: #cdd6f4; }
-        a:hover { text-decoration: underline; }
-        table { border-collapse: collapse; min-width: 600px; }
-        th { text-align: left; padding: 0 20px 10px 0; }
-        td { padding: 2px 20px 2px 0; white-space: nowrap; }
+        body {
+            font-family: 'JetBrains Mono';
+            padding: 20px;
+            background-color: #1e1e2e;
+            color: #cdd6f4;
+        }
+
+        jetbrains-mono-<uniquifier > {
+            font-family: "JetBrains Mono", monospace;
+            font-optical-sizing: auto;
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        h1 {
+            font-size: 1.5em;
+            font-weight: normal;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #ccc;
+        }
+
+        a {
+            text-decoration: none;
+            color: #cdd6f4;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+
+        table {
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        th {
+            text-align: left;
+            padding: 0 20px 10px 0;
+        }
+
+        td {
+            padding: 2px 20px 2px 0;
+            white-space: nowrap;
+        }
+
         #download-all-btn {
             font-family: 'JetBrains Mono', monospace;
             background-color: #313244;
@@ -58,21 +98,21 @@
             transition: background-color 0.15s ease, border-color 0.15s ease;
         }
 
-        #download-all-btn svg {
-            width: 18px;
-            height: 18px;
-            flex-shrink: 0;
-        }
+            #download-all-btn svg {
+                width: 18px;
+                height: 18px;
+                flex-shrink: 0;
+            }
 
-        #download-all-btn:hover {
-            background-color: #45475a;
-            border-color: #585b70;
-        }
+            #download-all-btn:hover {
+                background-color: #45475a;
+                border-color: #585b70;
+            }
 
-        #download-all-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+            #download-all-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
 
         @media (max-width: 600px) {
             #download-all-btn {
@@ -83,9 +123,9 @@
                 justify-content: center;
             }
 
-            #download-all-btn .btn-label {
-                display: none;
-            }
+                #download-all-btn .btn-label {
+                    display: none;
+                }
         }
     </style>
 </head>

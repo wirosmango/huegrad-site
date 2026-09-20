@@ -43,11 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeItem) activeItem.classList.add('active');
   }
 
-  // --- Инициализация Glide (только один раз, без вложенности) ---
+  // --- Инициализация Glide: все .glide-блоки на странице, без ручных id ---
   if (typeof Glide !== 'undefined') {
-    const glideHistoryEl = document.getElementById('glide-history');
-    if (glideHistoryEl) {
-      new Glide(glideHistoryEl, {
+    document.querySelectorAll('.glide').forEach((el) => {
+      new Glide(el, {
         type: 'slider',
         perView: 1,
         gap: 10,
@@ -55,19 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         keyboard: true,
         dragThreshold: 2
       }).mount();
-    }
-
-    const glideNazvaEl = document.getElementById('glide-nazva');
-    if (glideNazvaEl) {
-      new Glide(glideNazvaEl, {
-        type: 'slider',
-        perView: 1,
-        gap: 10,
-        autoplay: false,
-        keyboard: true,
-        dragThreshold: 2
-      }).mount();
-    }
+    });
 
     console.log('Слайдеры успешно инициализированы');
   } else {

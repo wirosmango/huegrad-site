@@ -67,16 +67,26 @@
             <h2 class="section-title">Начало</h2>
             <p>Славный город Хуеград начинает свою не менее славную историю <b>10 февраля 2026 года</b>. В тот день были построены деревянный свастон и дом в виде хуя, по образу которого начали строиться и остальные дома в центре Хуеграда (и даже знаменитый ZOV Corp. в их числе).</p>
             <!-- Первый слайдер (с двумя картинками) -->
-            <div id="glide-history" class="glide" style="width: 400px; border: 1px solid #ccc;">
+            
+
+
+            <p><b>14 февраля того же года</b> город получил название <b>Хуеград</b>...</p>
+
+            <!-- Второй слайдер (с одной картинкой) -->
+            <!-- ВАЖНО: У него тоже должен быть свой уникальный ID -->
+            
+        </div>
+
+        <div id="glide-history" class="glide" style="width: 400px; border: 1px solid #ccc;">
               <div class="glide__track" data-glide-el="track">
                 <ul class="glide__slides">
                   <!-- Картинка 1 -->
                   <li class="glide__slide">
-                    <img src="https://via.placeholder.com/400x300/FF5733/FFFFFF?text=Slide+1" alt="Slide 1" style="width: 100%; height: auto;">
+                    <img src="media/swaston.jpg" loading="lazy">
                   </li>
                   <!-- Картинка 2 (должна появиться при переключении) -->
                   <li class="glide__slide">
-                    <img src="https://via.placeholder.com/400x300/33FF57/FFFFFF?text=Slide+2" alt="Slide 2" style="width: 100%; height: auto;">
+                    <img src="media/fh.jpg" loading="lazy">
                   </li>
                 </ul>
               </div>
@@ -85,16 +95,10 @@
                 <button class="glide__arrow glide__arrow--right" data-glide-dir=">">›</button>
               </div>
             </div>
-
-
-            <p><b>14 февраля того же года</b> город получил название <b>Хуеград</b>...</p>
-
-            <!-- Второй слайдер (с одной картинкой) -->
-            <!-- ВАЖНО: У него тоже должен быть свой уникальный ID -->
-            <div id="glide-nazva" class="glide" style="margin: 16px 0;">
+        <div id="glide-nazva" class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/nazva.png" alt="Название Хуеград"></li>
+                        <li class="glide__slide"><img src="media/nazva.png" alt="Название Хуеград" loading="lazy"></li>
                     </ul>
                 </div>
                 <!-- Для слайдера с 1 картинкой стрелки и точки не нужны, но если нужны - оставь -->
@@ -113,11 +117,14 @@
             <h2 class="section-title">Первый этап развития</h2>
             <p><b>12 марта</b> была построена станция «Петушково», которая до сих пор работает, хоть и претерпела многочисленные изменения в устройстве. Это был исключительно эксперимент, так как нормальной работы поезда без модов добиться не удалось. Поезд просто напросто крутило на рельсах, а ещё не было ручного управления. Было построено <b>КПП с. Дилдово.</b></p>
             <p><u>К сожалению, на этом развитие Хуеграда прекратилось на 2 месяца.</u></p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/pet_poezd.jpg" alt="Станция Петушково"></li>
-                        <li class="glide__slide"><img src="media/pet_poezd2.jpg" alt="Поезд"></li>
+                        <li class="glide__slide"><img src="media/pet_poezd.jpg" alt="Станция Петушково" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/pet_poezd2.jpg" alt="Поезд" loading="lazy"></li>
                     </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
@@ -129,7 +136,7 @@
                     <button class="glide__bullet" data-glide-dir="=1"></button>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== Возрождение Хуеграда ========== -->
         <div class="card" style="margin: 0 auto 24px;">
@@ -141,15 +148,18 @@
         <div class="card" style="margin: 0 auto 24px;">
             <h2 class="section-title">Бурный рост</h2>
             <p><b>24 июня 2026</b> — одна из самых знаменательных дат в истории Хуеграда. В этот день начался очень сильный прорыв в развитии — построена станция Хуеград, проведена первая линия рельсов, создан этот сайт и начали появляться новые деревни Хуеградского района.</p>
-            <div class="glide" style="margin: 16px 0;">
+            
+            <p><b>26 июня</b> был принят гимн Республики Хуеград — «Я сел жопой...».</p>
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/huegrad_station.jpg" alt="Станция Хуеград"></li>
+                        <li class="glide__slide"><img src="media/huegrad_station.jpg" alt="Станция Хуеград" loading="lazy"></li>
                     </ul>
                 </div>
             </div>
-            <p><b>26 июня</b> был принят гимн Республики Хуеград — «Я сел жопой...».</p>
-        </div>
+
 
         <!-- ========== Гимн Хуеграда ========== -->
         <div class="card" style="margin: 0 auto 24px;">
@@ -164,37 +174,43 @@
         <!-- ========== 27 июня — Дрочка ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>27 июня</b> на сайт была добавлена вкладка «Дрочка».</p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/drochka.jpg" alt="Вкладка Дрочка"></li>
+                        <li class="glide__slide"><img src="media/drochka.jpg" alt="Вкладка Дрочка" loading="lazy"></li>
                     </ul>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== 28 июня — ПТУ ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>28 июня</b> был построен ПТУ для ебланов №67 г. Хуеград.</p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/ptu1.jpg" alt="ПТУ 1"></li>
-                        <li class="glide__slide"><img src="media/ptu2.jpg" alt="ПТУ 2"></li>
-                        <li class="glide__slide"><img src="media/ptu3.jpg" alt="ПТУ 3"></li>
-                        <li class="glide__slide"><img src="media/ptu4.jpg" alt="ПТУ 4"></li>
-                        <li class="glide__slide"><img src="media/ptu5.jpg" alt="ПТУ 5"></li>
-                        <li class="glide__slide"><img src="media/ptu6.jpg" alt="ПТУ 6"></li>
-                        <li class="glide__slide"><img src="media/ptu7.jpg" alt="ПТУ 7"></li>
-                        <li class="glide__slide"><img src="media/ptu8.jpg" alt="ПТУ 8"></li>
-                        <li class="glide__slide"><img src="media/ptu9.jpg" alt="ПТУ 9"></li>
-                        <li class="glide__slide"><img src="media/ptu10.jpg" alt="ПТУ 10"></li>
-                        <li class="glide__slide"><img src="media/ptu11.jpg" alt="ПТУ 11"></li>
-                        <li class="glide__slide"><img src="media/ptu12.jpg" alt="ПТУ 12"></li>
-                        <li class="glide__slide"><img src="media/ptu13.jpg" alt="ПТУ 13"></li>
-                        <li class="glide__slide"><img src="media/ptu14.jpg" alt="ПТУ 14"></li>
-                        <li class="glide__slide"><img src="media/ptu15.jpg" alt="ПТУ 15"></li>
-                        <li class="glide__slide"><img src="media/ptu16.jpg" alt="ПТУ 16"></li>
+                        <li class="glide__slide"><img src="media/ptu1.jpg" alt="ПТУ 1" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu2.jpg" alt="ПТУ 2" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu3.jpg" alt="ПТУ 3" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu4.jpg" alt="ПТУ 4" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu5.jpg" alt="ПТУ 5" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu6.jpg" alt="ПТУ 6" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu7.jpg" alt="ПТУ 7" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu8.jpg" alt="ПТУ 8" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu9.jpg" alt="ПТУ 9" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu10.jpg" alt="ПТУ 10" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu11.jpg" alt="ПТУ 11" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu12.jpg" alt="ПТУ 12" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu13.jpg" alt="ПТУ 13" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu14.jpg" alt="ПТУ 14" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu15.jpg" alt="ПТУ 15" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/ptu16.jpg" alt="ПТУ 16" loading="lazy"></li>
                     </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
@@ -220,19 +236,22 @@
                     <button class="glide__bullet" data-glide-dir="=15"></button>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== 29 июня — Меллстройск ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>29 июня</b> была основана Меллстройская область. И хотя она является субъектом суверенной Республики Меллстроия, она тесно связана с историей Хуеграда, ведь они находятся на одном сервере. <b>2 июля</b> был достроен Меллстройск — столица Меллстроии.</p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/vokzal_mellstroysk.jpg" alt="Вокзал Меллстройск"></li>
+                        <li class="glide__slide"><img src="media/vokzal_mellstroysk.jpg" alt="Вокзал Меллстройск" loading="lazy"></li>
                     </ul>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== 11 июля — Huegrad FM ========== -->
         <div class="card" style="margin: 0 auto 24px;">
@@ -247,13 +266,16 @@
         <!-- ========== 18 июля — Почта ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>18 июля</b> построена почта Хуеграда.</p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/pochta_huegrad2.jpg" alt="Почта 1"></li>
-                        <li class="glide__slide"><img src="media/pochta_huegrad3.jpg" alt="Почта 2"></li>
-                        <li class="glide__slide"><img src="media/pochta_huegrad4.jpg" alt="Почта 3"></li>
-                        <li class="glide__slide"><img src="media/pochta_huegrad5.jpg" alt="Почта 4"></li>
+                        <li class="glide__slide"><img src="media/pochta_huegrad2.jpg" alt="Почта 1" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/pochta_huegrad3.jpg" alt="Почта 2" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/pochta_huegrad4.jpg" alt="Почта 3" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/pochta_huegrad5.jpg" alt="Почта 4" loading="lazy"></li>
                     </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
@@ -267,7 +289,7 @@
                     <button class="glide__bullet" data-glide-dir="=3"></button>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== 18 июля — ФБР ========== -->
         <div class="card" style="margin: 0 auto 24px;">
@@ -277,11 +299,14 @@
         <!-- ========== 19 июля — Телепорт ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>19 июля</b> был построен телепорт для быстрого перемещения между Хуеградом и Меллстройском. Находится на вокзале Меллстройска и в инфоцентре Хуеграда (у самого входа).</p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/tphuegrad.png" alt="Телепорт Хуеград"></li>
-                        <li class="glide__slide"><img src="media/tpmelstrojsk.png" alt="Телепорт Меллстройск"></li>
+                        <li class="glide__slide"><img src="media/tphuegrad.png" alt="Телепорт Хуеград" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/tpmelstrojsk.png" alt="Телепорт Меллстройск" loading="lazy"></li>
                     </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
@@ -293,18 +318,21 @@
                     <button class="glide__bullet" data-glide-dir="=1"></button>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== 19 июля — 6 Кактусов + OldParts ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p>В тот же день была открыта служба доставки 6 Кактусов и магазин OldParts (ныне не работающие). В отличие от почты, которая на тот момент отправляла только письма и только в другое отделение почты, 6 Кактусов доставляли/ в любой почтовый ящик или постомат.</p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/6dildakov1.png" alt="6 Кактусов 1"></li>
-                        <li class="glide__slide"><img src="media/6dildakov2.png" alt="6 Кактусов 2"></li>
-                        <li class="glide__slide"><img src="media/6dildakov3.png" alt="6 Кактусов 3"></li>
-                        <li class="glide__slide"><img src="media/oldparts.png" alt="OldParts"></li>
+                        <li class="glide__slide"><img src="media/6dildakov1.png" alt="6 Кактусов 1" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/6dildakov2.png" alt="6 Кактусов 2" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/6dildakov3.png" alt="6 Кактусов 3" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/oldparts.png" alt="OldParts" loading="lazy"></li>
                     </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
@@ -318,18 +346,21 @@
                     <button class="glide__bullet" data-glide-dir="=3"></button>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== 20 июля — Bank + Market ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>20 июля</b> были построены Huegrad Bank (HB) и Huegrad Market (HM).</p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/bank1.png" alt="Huegrad Bank 1"></li>
-                        <li class="glide__slide"><img src="media/bank2.png" alt="Huegrad Bank 2"></li>
-                        <li class="glide__slide"><img src="media/market1.png" alt="Huegrad Market 1"></li>
-                        <li class="glide__slide"><img src="media/market2.png" alt="Huegrad Market 2"></li>
+                        <li class="glide__slide"><img src="media/bank1.png" alt="Huegrad Bank 1" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/bank2.png" alt="Huegrad Bank 2" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/market1.png" alt="Huegrad Market 1" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/market2.png" alt="Huegrad Market 2" loading="lazy"></li>
                     </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
@@ -343,22 +374,25 @@
                     <button class="glide__bullet" data-glide-dir="=3"></button>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== 27 июля — ХТУ ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>27 июля</b> построен <b>Хуеградский Технический Университет им. Хинера.</b></p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/strojkaunivera4.jpg" alt="Стройка университета 4"></li>
-                        <li class="glide__slide"><img src="media/strojkaunivera5.jpg" alt="Стройка университета 5"></li>
-                        <li class="glide__slide"><img src="media/strojkaunivera3.jpg" alt="Стройка университета 3"></li>
-                        <li class="glide__slide"><img src="media/strojkaunivera1.jpg" alt="Стройка университета 1"></li>
-                        <li class="glide__slide"><img src="media/strojkaunivera2.jpg" alt="Стройка университета 2"></li>
-                        <li class="glide__slide"><img src="media/htuix1.png" alt="ХТУ ix 1"></li>
-                        <li class="glide__slide"><img src="media/htuix2.png" alt="ХТУ ix 2"></li>
-                        <li class="glide__slide"><img src="media/htuix3.png" alt="ХТУ ix 3"></li>
+                        <li class="glide__slide"><img src="media/strojkaunivera4.jpg" alt="Стройка университета 4" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/strojkaunivera5.jpg" alt="Стройка университета 5" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/strojkaunivera3.jpg" alt="Стройка университета 3" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/strojkaunivera1.jpg" alt="Стройка университета 1" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/strojkaunivera2.jpg" alt="Стройка университета 2" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/htuix1.png" alt="ХТУ ix 1" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/htuix2.png" alt="ХТУ ix 2" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/htuix3.png" alt="ХТУ ix 3" loading="lazy"></li>
                     </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
@@ -376,16 +410,21 @@
                     <button class="glide__bullet" data-glide-dir="=7"></button>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== 30 июля — Штаб ФБР + Авиаперелёт ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>30 июля</b> построена штаб-квартира ФБР в Меллстройске.</p>
-            <div class="glide" style="margin: 16px 0;">
+            
+            <p>В тот же день был совершён <a href="news-pages/aeroraces.html">междугородний авиаперелёт из Хуеграда в Меллстройск.</a></p>
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/fbrshtab.png" alt="Штаб ФБР"></li>
-                        <li class="glide__slide"><img src="media/fbrshtab2.jpg" alt="Штаб ФБР 2"></li>
+                        <li class="glide__slide"><img src="media/fbrshtab.png" alt="Штаб ФБР" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/fbrshtab2.jpg" alt="Штаб ФБР 2" loading="lazy"></li>
                     </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
@@ -397,13 +436,12 @@
                     <button class="glide__bullet" data-glide-dir="=1"></button>
                 </div>
             </div>
-            <p>В тот же день был совершён <a href="news-pages/aeroraces.html">междугородний авиаперелёт из Хуеграда в Меллстройск.</a></p>
-            <div class="glide" style="margin: 16px 0;">
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/polet.png" alt="Полёт 1"></li>
-                        <li class="glide__slide"><img src="media/polet2.png" alt="Полёт 2"></li>
-                        <li class="glide__slide"><img src="media/polet3.png" alt="Полёт 3"></li>
+                        <li class="glide__slide"><img src="media/polet.png" alt="Полёт 1" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/polet2.png" alt="Полёт 2" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/polet3.png" alt="Полёт 3" loading="lazy"></li>
                     </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
@@ -416,18 +454,21 @@
                     <button class="glide__bullet" data-glide-dir="=2"></button>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== 13 августа — ХуеДума + Суд ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>13 августа</b> были построены <b><a href="news-pages/hueduma.html">ХуеДума</a></b> и <b>Верховный суд Республики Хуеград</b>.</p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/hueduma.png" alt="ХуеДума"></li>
-                        <li class="glide__slide"><img src="media/hueduma2.png" alt="ХуеДума 2"></li>
-                        <li class="glide__slide"><img src="media/sudvtapkissut1.png" alt="Верховный суд"></li>
-                        <li class="glide__slide"><img src="media/sud2.png" alt="Суд 2"></li>
+                        <li class="glide__slide"><img src="media/hueduma.png" alt="ХуеДума" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/hueduma2.png" alt="ХуеДума 2" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/sudvtapkissut1.png" alt="Верховный суд" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/sud2.png" alt="Суд 2" loading="lazy"></li>
                     </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
@@ -441,17 +482,20 @@
                     <button class="glide__bullet" data-glide-dir="=3"></button>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== 16 августа — Выборы ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>16 августа</b> <a href="news-pages/elections2.html">состоялись выборы в ХуеДуму.</a></p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/vybory5.png" alt="Выборы 5"></li>
-                        <li class="glide__slide"><img src="media/vybory6.png" alt="Выборы 6"></li>
-                        <li class="glide__slide"><img src="media/vybory7.png" alt="Выборы 7"></li>
+                        <li class="glide__slide"><img src="media/vybory5.png" alt="Выборы 5" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/vybory6.png" alt="Выборы 6" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/vybory7.png" alt="Выборы 7" loading="lazy"></li>
                     </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
@@ -464,22 +508,25 @@
                     <button class="glide__bullet" data-glide-dir="=2"></button>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== 25 августа — Шахта ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>25 августа</b> <a href="news-pages/shakhta.html">построена шахта в <b>горе Дилдаковская</b></a>.</p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/shakhta1.png" alt="Шахта 1"></li>
-                        <li class="glide__slide"><img src="media/shakhta2.png" alt="Шахта 2"></li>
-                        <li class="glide__slide"><img src="media/shakhta3.png" alt="Шахта 3"></li>
-                        <li class="glide__slide"><img src="media/shakhta4.png" alt="Шахта 4"></li>
-                        <li class="glide__slide"><img src="media/shakhta5.png" alt="Шахта 5"></li>
-                        <li class="glide__slide"><img src="media/shakhta6.png" alt="Шахта 6"></li>
-                        <li class="glide__slide"><img src="media/shakhta7.png" alt="Шахта 7"></li>
-                        <li class="glide__slide"><img src="media/shakhta8.png" alt="Шахта 8"></li>
+                        <li class="glide__slide"><img src="media/shakhta1.png" alt="Шахта 1" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/shakhta2.png" alt="Шахта 2" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/shakhta3.png" alt="Шахта 3" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/shakhta4.png" alt="Шахта 4" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/shakhta5.png" alt="Шахта 5" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/shakhta6.png" alt="Шахта 6" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/shakhta7.png" alt="Шахта 7" loading="lazy"></li>
+                        <li class="glide__slide"><img src="media/shakhta8.png" alt="Шахта 8" loading="lazy"></li>
                     </ul>
                 </div>
                 <div class="glide__arrows" data-glide-el="controls">
@@ -497,19 +544,22 @@
                     <button class="glide__bullet" data-glide-dir="=7"></button>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== 26 августа — Ферма ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>26 августа</b> началось строительство фермы под псн. Пабловка.</p>
-            <div class="glide" style="margin: 16px 0;">
+            
+        </div>
+
+        <div class="glide" style="margin: 16px 0;">
                 <div class="glide__track" data-glide-el="track">
                     <ul class="glide__slides">
-                        <li class="glide__slide"><img src="media/polje1.png" alt="Ферма Пабловка"></li>
+                        <li class="glide__slide"><img src="media/polje1.png" alt="Ферма Пабловка" loading="lazy"></li>
                     </ul>
                 </div>
             </div>
-        </div>
+
 
         <!-- ========== Итоговая цитата ========== -->
         <div class="card" style="margin: 0 auto 24px; border-left: 4px solid var(--accent-color, #ff5555);">
