@@ -60,7 +60,8 @@ const initialToggleBtn = document.getElementById('topicsToggleBtn');
 const sidebar = document.getElementById('sidebar');
 if (initialToggleBtn && sidebar) {
   initialToggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
+    const isActive = sidebar.classList.toggle('active');
+    initialToggleBtn.setAttribute('aria-expanded', isActive);
   });
 }
 
@@ -120,7 +121,10 @@ async function openTopic(topicId, title) {
   <div class="content-inner">
     <div class="topic-header">
       <h1>${title}</h1>
-      <button class="topics-toggle-btn" id="topicsToggleBtn" aria-label="Темы">☰</button>
+      <button class="topics-toggle-btn" id="topicsToggleBtn" aria-label="Темы" aria-expanded="false">
+        <span>${title}</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
     </div>
     <div class="post">
       <input id="nickname" placeholder="Ваш ник" maxlength="30">
@@ -143,7 +147,8 @@ const topicsToggleBtn = document.getElementById('topicsToggleBtn');
 
   if (topicsToggleBtn && sidebar) {
     topicsToggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
+      const isActive = sidebar.classList.toggle('active');
+      topicsToggleBtn.setAttribute('aria-expanded', isActive);
     });
   }
 
