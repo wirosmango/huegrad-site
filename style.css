@@ -1136,3 +1136,669 @@ ul.styled-list {
   max-width: 700px;
   margin: 16px auto;
 }
+
+
+/* ============================================================
+   WinUI 3 / Fluent Media Player
+   ============================================================ */
+
+.winui-player {
+  width: min(900px, 100%);
+  margin: 18px auto 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid var(--acrylic-border);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025)),
+    var(--acrylic-strong);
+  backdrop-filter: blur(32px) saturate(140%);
+  -webkit-backdrop-filter: blur(32px) saturate(140%);
+  box-shadow: var(--shadow-md);
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.winui-player-main {
+  min-height: 116px;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 20px;
+  box-sizing: border-box;
+}
+
+.winui-album-art {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  color: white;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,.28), transparent 35%),
+    linear-gradient(135deg, var(--accent), #7c3aed);
+  box-shadow: 0 6px 18px rgba(0,0,0,.28);
+}
+
+.winui-album-art svg {
+  width: 42px;
+  height: 42px;
+}
+
+.winui-track-info {
+  min-width: 0;
+}
+
+.winui-track-title {
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.winui-track-artist {
+  margin-top: 3px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.winui-progress-wrap {
+  margin-top: 14px;
+}
+
+.winui-progress,
+.winui-volume-range {
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  width: 100%;
+  height: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 99px;
+  outline: none;
+  cursor: pointer;
+  background:
+    linear-gradient(to right, var(--accent) 0 var(--progress, 0%), rgba(255,255,255,.16) var(--progress, 0%) 100%);
+}
+
+.winui-progress::-webkit-slider-thumb,
+.winui-volume-range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--mica-bg);
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity .15s ease, transform .15s ease;
+}
+
+.winui-progress:hover::-webkit-slider-thumb,
+.winui-volume-range:hover::-webkit-slider-thumb,
+.winui-progress:focus-visible::-webkit-slider-thumb,
+.winui-volume-range:focus-visible::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+.winui-progress::-moz-range-thumb,
+.winui-volume-range::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--mica-bg);
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+}
+
+.winui-progress:hover::-moz-range-thumb,
+.winui-volume-range:hover::-moz-range-thumb,
+.winui-progress:focus-visible::-moz-range-thumb,
+.winui-volume-range:focus-visible::-moz-range-thumb {
+  opacity: 1;
+}
+
+.winui-time {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+.winui-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.winui-icon-btn,
+.winui-play-btn {
+  border: 0;
+  cursor: pointer;
+  color: var(--text-primary);
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .12s ease, transform .1s ease;
+}
+
+.winui-icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  font-size: 20px;
+}
+
+.winui-icon-btn:hover {
+  background: rgba(255,255,255,.07);
+}
+
+.winui-icon-btn:active,
+.winui-play-btn:active {
+  transform: scale(.94);
+}
+
+.winui-icon-btn svg {
+  width: 19px;
+  height: 19px;
+}
+
+.winui-play-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  box-shadow: 0 3px 10px rgba(0,0,0,.25);
+}
+
+.winui-play-btn:hover {
+  background: var(--accent-hover);
+}
+
+.winui-play-icon,
+.winui-pause-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.winui-pause-icon {
+  display: none;
+}
+
+.winui-player.is-playing .winui-play-icon {
+  display: none;
+}
+
+.winui-player.is-playing .winui-pause-icon {
+  display: block;
+}
+
+.winui-volume {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 105px;
+}
+
+.winui-volume-range {
+  width: 70px;
+  background:
+    linear-gradient(to right, var(--accent) 0 var(--volume, 100%), rgba(255,255,255,.16) var(--volume, 100%) 100%);
+}
+
+.winui-volume .winui-icon-btn.is-muted {
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 700px) {
+  .winui-player-main {
+    grid-template-columns: 56px minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .winui-album-art {
+    width: 56px;
+    height: 56px;
+  }
+
+  .winui-album-art svg {
+    width: 34px;
+    height: 34px;
+  }
+
+  .winui-controls {
+    grid-column: 2 / 4;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  .winui-volume {
+    grid-column: 1 / 4;
+    width: 100%;
+  }
+
+  .winui-volume-range {
+    flex: 1;
+    width: auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .winui-player-main {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .winui-album-art {
+    width: 48px;
+    height: 48px;
+  }
+
+  .winui-album-art svg {
+    width: 29px;
+    height: 29px;
+  }
+
+  .winui-controls {
+    grid-column: 1 / 3;
+  }
+
+  .winui-volume {
+    grid-column: 1 / 3;
+  }
+
+  .winui-track-title {
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .winui-icon-btn,
+  .winui-play-btn,
+  .winui-progress::-webkit-slider-thumb,
+  .winui-volume-range::-webkit-slider-thumb {
+    transition: none;
+  }
+}
+
+
+/* Windows 11 Media Player inspired cover treatment */
+.winui-player {
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(111, 111, 255, .16), transparent 34%),
+    radial-gradient(circle at 92% 100%, rgba(0, 120, 212, .14), transparent 38%),
+    linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.025)),
+    var(--acrylic-strong);
+  border-color: rgba(255,255,255,.12);
+}
+
+.winui-player-main {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) auto auto;
+  gap: 18px;
+  align-items: center;
+  padding: 16px;
+}
+
+.winui-album-art {
+  position: relative;
+  width: 92px;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(0,0,0,.30);
+}
+
+.winui-cover-glow {
+  position: absolute;
+  inset: -22px;
+  background: conic-gradient(from 120deg, #7f72ff, #00a2ff, #5a42c7, #7f72ff);
+  filter: blur(20px);
+  opacity: .7;
+}
+
+.winui-cover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.22), rgba(255,255,255,.02)),
+    linear-gradient(135deg, #5146b9 0%, #236bb8 55%, #171a36 100%);
+  border: 1px solid rgba(255,255,255,.18);
+}
+
+.winui-cover-symbol {
+  font-size: 39px;
+  line-height: .9;
+  font-weight: 800;
+  letter-spacing: -3px;
+  color: #fff;
+  text-shadow: 0 3px 16px rgba(0,0,0,.28);
+}
+
+.winui-cover-title {
+  margin-top: 8px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  color: rgba(255,255,255,.94);
+}
+
+.winui-cover-subtitle {
+  margin-top: 3px;
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,.62);
+}
+
+.winui-track-kicker {
+  margin-bottom: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  color: var(--text-tertiary);
+}
+
+.winui-track-title {
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.winui-track-artist {
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.winui-progress-wrap {
+  margin-top: 12px;
+}
+
+@media (max-width: 700px) {
+  .winui-player-main {
+    grid-template-columns: 68px minmax(0, 1fr) auto;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .winui-album-art {
+    width: 68px;
+    border-radius: 8px;
+  }
+
+  .winui-cover-symbol { font-size: 30px; }
+  .winui-cover-title { font-size: 7px; letter-spacing: 1.2px; }
+  .winui-cover-subtitle { font-size: 6px; }
+
+  .winui-track-title { font-size: 15px; }
+  .winui-volume { display: none; }
+
+  .winui-controls {
+    gap: 4px;
+  }
+
+  .winui-icon-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .winui-play-btn {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+@media (max-width: 420px) {
+  .winui-player-main {
+    grid-template-columns: 58px minmax(0, 1fr);
+  }
+
+  .winui-album-art {
+    width: 58px;
+  }
+
+  .winui-controls {
+    grid-column: 1 / -1;
+    justify-content: center;
+    margin-top: 2px;
+  }
+
+  .winui-track-kicker {
+    font-size: 9px;
+  }
+}
+
+
+/* Reliable Glide layout */
+.glide { position: relative; width: 100%; }
+.glide__track { overflow: hidden; }
+.glide__slides { display: flex; flex-wrap: nowrap; overflow: visible; margin: 0; padding: 0; list-style: none; }
+.glide__slide { flex-shrink: 0; width: 100%; }
+.glide__slide img { display: block; width: 100%; height: auto; }
+
+/* ============================================================
+   WinUI 3 / Windows 11 Media Player — playlist
+   ============================================================ */
+
+.winui-playlist {
+  width: min(900px, 100%);
+  margin: 10px auto 24px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid var(--acrylic-border);
+  border-radius: 14px;
+  background: var(--acrylic);
+  backdrop-filter: blur(28px) saturate(135%);
+  -webkit-backdrop-filter: blur(28px) saturate(135%);
+  color: var(--text-primary);
+}
+
+.winui-playlist-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 58px;
+  padding: 9px 14px 9px 16px;
+  box-sizing: border-box;
+}
+
+.winui-playlist-title {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 650;
+}
+
+.winui-playlist-subtitle {
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-tertiary);
+}
+
+.winui-playlist-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.winui-playlist-toggle:hover {
+  background: rgba(255,255,255,.07);
+  color: var(--text-primary);
+}
+
+.winui-playlist-toggle:active {
+  background: rgba(255,255,255,.11);
+}
+
+.winui-playlist-items {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 330px;
+  overflow-y: auto;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.winui-playlist-item {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  width: 100%;
+  min-height: 52px;
+  margin: 0;
+  padding: 7px 14px;
+  box-sizing: border-box;
+  border: 0;
+  border-bottom: 1px solid rgba(255,255,255,.045);
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background .12s ease;
+}
+
+.winui-playlist-item:last-child {
+  border-bottom: 0;
+}
+
+.winui-playlist-item:hover {
+  background: rgba(255,255,255,.055);
+}
+
+.winui-playlist-item:active {
+  background: rgba(255,255,255,.085);
+}
+
+.winui-playlist-item:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.winui-playlist-item.is-current {
+  background: var(--accent-soft);
+}
+
+.winui-item-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.winui-playlist-item.is-current .winui-item-number {
+  color: var(--accent);
+}
+
+.winui-item-meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.winui-item-title {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+.winui-item-artist {
+  display: block;
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  line-height: 15px;
+  color: var(--text-tertiary);
+}
+
+.winui-item-duration {
+  min-width: 42px;
+  margin-left: 12px;
+  color: var(--text-tertiary);
+  font-size: 11px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.winui-playlist.is-collapsed .winui-playlist-items {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .winui-playlist {
+    margin-top: 8px;
+    border-radius: 12px;
+  }
+
+  .winui-playlist-header {
+    min-height: 54px;
+    padding: 8px 10px 8px 12px;
+  }
+
+  .winui-playlist-item {
+    grid-template-columns: 26px minmax(0, 1fr) auto;
+    min-height: 50px;
+    padding: 7px 10px;
+  }
+
+  .winui-item-number {
+    width: 26px;
+  }
+
+  .winui-item-duration {
+    margin-left: 8px;
+  }
+}
+
+@media (max-width: 420px) {
+  .winui-playlist-item {
+    grid-template-columns: 24px minmax(0, 1fr) auto;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .winui-item-number {
+    width: 24px;
+  }
+}

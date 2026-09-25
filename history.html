@@ -67,14 +67,14 @@
             <h2 class="section-title">Начало</h2>
             <p>Славный город Хуеград начинает свою не менее славную историю <b>10 февраля 2026 года</b>. В тот день были построены деревянный свастон и дом в виде хуя, по образу которого начали строиться и остальные дома в центре Хуеграда (и даже знаменитый ZOV Corp. в их числе).</p>
             <!-- Первый слайдер (с двумя картинками) -->
-            
+
 
 
             <p><b>14 февраля того же года</b> город получил название <b>Хуеград</b>...</p>
 
             <!-- Второй слайдер (с одной картинкой) -->
             <!-- ВАЖНО: У него тоже должен быть свой уникальный ID -->
-            
+
         </div>
 
         <div id="glide-history" class="glide" style="width: 400px; border: 1px solid #ccc;">
@@ -117,7 +117,7 @@
             <h2 class="section-title">Первый этап развития</h2>
             <p><b>12 марта</b> была построена станция «Петушково», которая до сих пор работает, хоть и претерпела многочисленные изменения в устройстве. Это был исключительно эксперимент, так как нормальной работы поезда без модов добиться не удалось. Поезд просто напросто крутило на рельсах, а ещё не было ручного управления. Было построено <b>КПП с. Дилдово.</b></p>
             <p><u>К сожалению, на этом развитие Хуеграда прекратилось на 2 месяца.</u></p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -148,7 +148,7 @@
         <div class="card" style="margin: 0 auto 24px;">
             <h2 class="section-title">Бурный рост</h2>
             <p><b>24 июня 2026</b> — одна из самых знаменательных дат в истории Хуеграда. В этот день начался очень сильный прорыв в развитии — построена станция Хуеград, проведена первая линия рельсов, создан этот сайт и начали появляться новые деревни Хуеградского района.</p>
-            
+
             <p><b>26 июня</b> был принят гимн Республики Хуеград — «Я сел жопой...».</p>
         </div>
 
@@ -174,7 +174,7 @@
         <!-- ========== 27 июня — Дрочка ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>27 июня</b> на сайт была добавлена вкладка «Дрочка».</p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -189,7 +189,7 @@
         <!-- ========== 28 июня — ПТУ ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>28 июня</b> был построен ПТУ для ебланов №67 г. Хуеград.</p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -241,7 +241,7 @@
         <!-- ========== 29 июня — Меллстройск ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>29 июня</b> была основана Меллстройская область. И хотя она является субъектом суверенной Республики Меллстроия, она тесно связана с историей Хуеграда, ведь они находятся на одном сервере. <b>2 июля</b> был достроен Меллстройск — столица Меллстроии.</p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -257,16 +257,73 @@
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>11 июля</b> была запущена радиостанция Huegrad FM.</p>
             <h2 class="section-title" style="margin-top: 16px;">Huegrad FM</h2>
-            <div style="text-align: center; padding: 8px 0;">
-                <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay; encrypted-media"
-                    src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2266543478&color=%234c648c&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
+            <div class="winui-player" id="winuiPlayer">
+                <audio id="winuiAudio" preload="metadata"></audio>
+
+                <div class="winui-player-main">
+                    <div class="winui-album-art" aria-hidden="true">
+                        <div class="winui-cover-glow"></div>
+                        <img class="winui-cover-image" id="winuiCover" src="covers/gimn.jpg" alt="">
+                        <div class="winui-cover-fallback" id="winuiCoverFallback">
+                            <div class="winui-cover-symbol">Х</div>
+                            <div class="winui-cover-title">ХУЕГРАД</div>
+                            <div class="winui-cover-subtitle">ГИМН</div>
+                        </div>
+                    </div>
+
+                    <div class="winui-track-info">
+                        <div class="winui-track-kicker">СЕЙЧАС ИГРАЕТ</div>
+                        <div class="winui-track-title" id="winuiTitle">Гимн Хуеграда</div>
+                        <div class="winui-track-artist" id="winuiArtist">Huegrad FM</div>
+                        <div class="winui-progress-wrap">
+                            <input class="winui-progress" id="winuiProgress" type="range" min="0" max="100" value="0" step="0.1" aria-label="Позиция воспроизведения">
+                            <div class="winui-time">
+                                <span id="winuiCurrent">0:00</span>
+                                <span id="winuiDuration">0:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="winui-controls">
+                        <button class="winui-icon-btn" id="winuiPrev" type="button" aria-label="Предыдущий трек" title="Предыдущий трек">⏮</button>
+                        <button class="winui-icon-btn" id="winuiBack" type="button" aria-label="Назад на 10 секунд" title="−10 секунд">↶</button>
+                        <button class="winui-play-btn" id="winuiPlay" type="button" aria-label="Воспроизвести" title="Воспроизвести">
+                            <svg class="winui-play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13L18 12 8 5.5z"/></svg>
+                            <svg class="winui-pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+                        </button>
+                        <button class="winui-icon-btn" id="winuiForward" type="button" aria-label="Вперёд на 10 секунд" title="+10 секунд">↷</button>
+                        <button class="winui-icon-btn" id="winuiNext" type="button" aria-label="Следующий трек" title="Следующий трек">⏭</button>
+                    </div>
+
+                    <div class="winui-volume">
+                        <button class="winui-icon-btn" id="winuiMute" type="button" aria-label="Выключить звук" title="Звук">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 5 6 9H3v6h3l5 4V5z"/>
+                                <path d="M19 9a5 5 0 0 1 0 6"/>
+                                <path d="M16.5 6.5a8.5 8.5 0 0 1 0 11"/>
+                            </svg>
+                        </button>
+                        <input class="winui-volume-range" id="winuiVolume" type="range" min="0" max="1" value="1" step="0.01" aria-label="Громкость">
+                    </div>
+                </div>
+            </div>
+
+            <div class="winui-playlist" id="winuiPlaylist">
+                <div class="winui-playlist-header">
+                    <div>
+                        <div class="winui-playlist-title">Далее</div>
+                        <div class="winui-playlist-subtitle" id="winuiPlaylistCount">0 треков</div>
+                    </div>
+                    <button class="winui-playlist-toggle" id="winuiPlaylistToggle" type="button" aria-label="Свернуть плейлист">⌃</button>
+                </div>
+                <div class="winui-playlist-items" id="winuiPlaylistItems"></div>
             </div>
         </div>
 
         <!-- ========== 18 июля — Почта ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>18 июля</b> построена почта Хуеграда.</p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -299,7 +356,7 @@
         <!-- ========== 19 июля — Телепорт ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>19 июля</b> был построен телепорт для быстрого перемещения между Хуеградом и Меллстройском. Находится на вокзале Меллстройска и в инфоцентре Хуеграда (у самого входа).</p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -323,7 +380,7 @@
         <!-- ========== 19 июля — 6 Кактусов + OldParts ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p>В тот же день была открыта служба доставки 6 Кактусов и магазин OldParts (ныне не работающие). В отличие от почты, которая на тот момент отправляла только письма и только в другое отделение почты, 6 Кактусов доставляли/ в любой почтовый ящик или постомат.</p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -351,7 +408,7 @@
         <!-- ========== 20 июля — Bank + Market ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>20 июля</b> были построены Huegrad Bank (HB) и Huegrad Market (HM).</p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -379,7 +436,7 @@
         <!-- ========== 27 июля — ХТУ ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>27 июля</b> построен <b>Хуеградский Технический Университет им. Хинера.</b></p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -415,9 +472,9 @@
         <!-- ========== 30 июля — Штаб ФБР + Авиаперелёт ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>30 июля</b> построена штаб-квартира ФБР в Меллстройске.</p>
-            
+
             <p>В тот же день был совершён <a href="news-pages/aeroraces.html">междугородний авиаперелёт из Хуеграда в Меллстройск.</a></p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -459,7 +516,7 @@
         <!-- ========== 13 августа — ХуеДума + Суд ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>13 августа</b> были построены <b><a href="news-pages/hueduma.html">ХуеДума</a></b> и <b>Верховный суд Республики Хуеград</b>.</p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -487,7 +544,7 @@
         <!-- ========== 16 августа — Выборы ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>16 августа</b> <a href="news-pages/elections2.html">состоялись выборы в ХуеДуму.</a></p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -513,7 +570,7 @@
         <!-- ========== 25 августа — Шахта ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>25 августа</b> <a href="news-pages/shakhta.html">построена шахта в <b>горе Дилдаковская</b></a>.</p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -549,7 +606,7 @@
         <!-- ========== 26 августа — Ферма ========== -->
         <div class="card" style="margin: 0 auto 24px;">
             <p><b>26 августа</b> началось строительство фермы под псн. Пабловка.</p>
-            
+
         </div>
 
         <div class="glide" style="margin: 16px 0;">
@@ -572,5 +629,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@glidejs/glide/dist/glide.min.js"></script>
     <script src="./nav.js"></script>
+    <script src="./player.js"></script>
 </body>
 </html>

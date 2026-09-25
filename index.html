@@ -96,21 +96,71 @@
             </div>
         </div>
 
-        <div class="soundcloud">
-            <h2 class="section-title">Huegrad FM</h2>
-            <iframe width="75%" height="300" scrolling="no" frameborder="no" allow="autoplay; encrypted-media" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2266543478&color=%234c648c&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
-        </div>
-
         <div class="anthem">
-            <h2 class="section-title">Гимн Хуеграда</h2>
-            <audio controls>
-                <source src="gimn.mp3" type="audio/mpeg">
-            </audio>
-        </div>
-    </main>
-    <footer class="footer">
-        <p>Хуеград&trade;, все права защищены <span style="font-size: 6px;">(нет)</span></p>
-    </footer>
-    <script src="./nav.js"></script>
+            <h2 class="section-title">Huegrad FM</h2>
+
+            <div class="winui-player" id="winuiPlayer">
+                <audio id="winuiAudio" preload="metadata"></audio>
+
+                <div class="winui-player-main">
+                    <div class="winui-album-art" aria-hidden="true">
+                        <div class="winui-cover-glow"></div>
+                        <img class="winui-cover-image" id="winuiCover" src="covers/gimn.jpg" alt="">
+                        <div class="winui-cover-fallback" id="winuiCoverFallback">
+                            <div class="winui-cover-symbol">Х</div>
+                            <div class="winui-cover-title">ХУЕГРАД</div>
+                            <div class="winui-cover-subtitle">ГИМН</div>
+                        </div>
+                    </div>
+
+                    <div class="winui-track-info">
+                        <div class="winui-track-kicker">СЕЙЧАС ИГРАЕТ</div>
+                        <div class="winui-track-title" id="winuiTitle">Гимн Хуеграда</div>
+                        <div class="winui-track-artist" id="winuiArtist">Huegrad FM</div>
+                        <div class="winui-progress-wrap">
+                            <input class="winui-progress" id="winuiProgress" type="range" min="0" max="100" value="0" step="0.1" aria-label="Позиция воспроизведения">
+                            <div class="winui-time">
+                                <span id="winuiCurrent">0:00</span>
+                                <span id="winuiDuration">0:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="winui-controls">
+                        <button class="winui-icon-btn" id="winuiPrev" type="button" aria-label="Предыдущий трек" title="Предыдущий трек">⏮</button>
+                        <button class="winui-icon-btn" id="winuiBack" type="button" aria-label="Назад на 10 секунд" title="−10 секунд">↶</button>
+                        <button class="winui-play-btn" id="winuiPlay" type="button" aria-label="Воспроизвести" title="Воспроизвести">
+                            <svg class="winui-play-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13L18 12 8 5.5z"/></svg>
+                            <svg class="winui-pause-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>
+                        </button>
+                        <button class="winui-icon-btn" id="winuiForward" type="button" aria-label="Вперёд на 10 секунд" title="+10 секунд">↷</button>
+                        <button class="winui-icon-btn" id="winuiNext" type="button" aria-label="Следующий трек" title="Следующий трек">⏭</button>
+                    </div>
+
+                    <div class="winui-volume">
+                        <button class="winui-icon-btn" id="winuiMute" type="button" aria-label="Выключить звук" title="Звук">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 5 6 9H3v6h3l5 4V5z"/>
+                                <path d="M19 9a5 5 0 0 1 0 6"/>
+                                <path d="M16.5 6.5a8.5 8.5 0 0 1 0 11"/>
+                            </svg>
+                        </button>
+                        <input class="winui-volume-range" id="winuiVolume" type="range" min="0" max="1" value="1" step="0.01" aria-label="Громкость">
+                    </div>
+                </div>
+            </div>
+
+            <div class="winui-playlist" id="winuiPlaylist">
+                <div class="winui-playlist-header">
+                    <div>
+                        <div class="winui-playlist-title">Далее</div>
+                        <div class="winui-playlist-subtitle" id="winuiPlaylistCount">0 треков</div>
+                    </div>
+                    <button class="winui-playlist-toggle" id="winuiPlaylistToggle" type="button" aria-label="Свернуть плейлист">⌃</button>
+                </div>
+                <div class="winui-playlist-items" id="winuiPlaylistItems"></div>
+            </div>
+<script src="./player.js"></script>
+<script src="./nav.js"></script>
 </body>
 </html>
