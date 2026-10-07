@@ -2,48 +2,85 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Index of /mods/</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+
+    <title>Index of /mods/</title>
+
     <style>
-        body { font-family: 'JetBrains Mono'; padding: 20px; background-color: #1e1e2e; color: #cdd6f4; }
-        jetbrains-mono-<uniquifier> { font-family: "JetBrains Mono", monospace; font-optical-sizing: auto; font-weight: <weight>; font-style: normal;}
-        h1 { font-size: 1.5em; font-weight: normal; }
-        hr { border: 0; border-top: 1px solid #ccc; }
-        a { text-decoration: none; color: #cdd6f4; }
-        a:hover { text-decoration: underline; }
-        table { border-collapse: collapse; min-width: 600px; }
-        th { text-align: left; padding: 0 20px 10px 0; }
-        td { padding: 2px 20px 2px 0; white-space: nowrap; }
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            margin: 40px;
+            background: #000;
+            color: #fff;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        a {
+            color: #0067c0;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                margin: 15px;
+            }
+        }
     </style>
 </head>
+
 <body>
-    <h1>Index of /mods/</h1>
-    <hr>
-    <table>
+
+<h1>Index of /mods/</h1>
+
+<table>
+    <thead>
         <tr>
             <th>Name</th>
             <th>Last modified</th>
-            <th>Size</th>
         </tr>
-        <tr>
-            <td><a href="../">../</a></td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
+    </thead>
 
-        <tr>
-            <td><a href="files/">files/</a></td>
-            <td>01-Aug-2026 23:28</td>
+    <tbody>        <tr>
+            <td>
+                [DIR]
+                <a href="files/">
+                    files/
+                </a>
+            </td>
+
             <td>-</td>
-        </tr>
-        <tr>
-            <td><a href="world/">world/</a></td>
-            <td>24-Aug-2026 15:13</td>
+        </tr>        <tr>
+            <td>
+                [DIR]
+                <a href="world/">
+                    world/
+                </a>
+            </td>
+
             <td>-</td>
-        </tr>
-    </table>
-    <hr>
+        </tr>    </tbody>
+</table>
+
 </body>
 </html>

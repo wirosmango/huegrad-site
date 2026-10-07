@@ -1,245 +1,336 @@
-$RootDir = "mods/files"
+$ModsPath = Join-Path $PSScriptRoot "mods"
 
-function Format-Size {
-    param([long]$SizeBytes)
-    if ($SizeBytes -lt 1MB) {
-        return "{0:N1} KB" -f ($SizeBytes / 1KB)
-    } else {
-        return "{0:N1} MB" -f ($SizeBytes / 1MB)
+function Format-Size($Bytes) {
+    if ($Bytes -lt 1KB) {
+        return "$Bytes B"
+    }
+    elseif ($Bytes -lt 1MB) {
+        return "{0:N1} KB" -f ($Bytes / 1KB)
+    }
+    else {
+        return "{0:N1} MB" -f ($Bytes / 1MB)
     }
 }
 
-$downloadScript = @'
-    <script>
-    document.getElementById('download-all-btn').addEventListener('click', downloadAllFiles);
+# ============================================================
+# mods/index.html
+# ============================================================
 
-    async function downloadAllFiles() {
-    const btn = document.getElementById('download-all-btn');
-      btn.disabled = true;
-      const status = document.getElementById('download-status');
-      const links = Array.from(document.querySelectorAll('table a'))
-        .filter(a => !a.getAttribute('href').startsWith('..'));
-        status.textContent = 'Готово!';
-        btn.disabled = false;
+$Directories = Get-ChildItem -Path $ModsPath -Directory |
+    Sort-Object Name
 
-      const zip = new JSZip();
-      let done = 0;
-
-      for (const link of links) {
-        const url = link.href;
-        const name = decodeURIComponent(link.getAttribute('href'));
-        status.textContent = `Скачиваю ${++done}/${links.length}: ${name}`;
-
-        const response = await fetch(url);
-        const blob = await response.blob();
-        zip.file(name, blob);
-      }
-
-      status.textContent = 'Упаковываю zip...';
-      const content = await zip.generateAsync({ type: 'blob' });
-      saveAs(content, 'mods.zip');
-      status.textContent = 'Готово!';
-    }
-    </script>
-'@
-
-function Generate-Index {
-    param(
-        [string]$DirPath,
-        [string]$TitlePath
-    )
-
-    # ��������� ��� ��, ��� os.listdir + sorted() � Python
-    $entries = Get-ChildItem -LiteralPath $DirPath -Force | Sort-Object Name
-
-    $html = @"
+$Html = @"
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Index of /$TitlePath/</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+
+    <title>Index of /mods/</title>
+
     <style>
-        body { font-family: 'JetBrains Mono'; padding: 20px; background-color: #1e1e2e; color: #cdd6f4; }
-        jetbrains-mono-<uniquifier> { font-family: "JetBrains Mono", monospace; font-optical-sizing: auto; font-weight: <weight>; font-style: normal;}
-        h1 { font-size: 1.5em; font-weight: normal; }
-        hr { border: 0; border-top: 1px solid #ccc; }
-        a { text-decoration: none; color: #cdd6f4; }
-        a:hover { text-decoration: underline; }
-        table { border-collapse: collapse; min-width: 600px; }
-        th { text-align: left; padding: 0 20px 10px 0; }
-        td { padding: 2px 20px 2px 0; white-space: nowrap; }
-        #download-all-btn {
-            font-family: 'JetBrains Mono', monospace;
-            background-color: #313244;
-            color: #cdd6f4;
-            border: 1px solid #45475a;
-            border-radius: 6px;
-            padding: 8px 16px;
-            font-size: 0.95em;
-            cursor: pointer;
-            transition: background-color 0.15s ease, border-color 0.15s ease;
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            margin: 40px;
+            background: #000;
+            color: #fff;
         }
 
-        #download-status {
-            font-family: 'JetBrains Mono', monospace;
-            margin-left: 12px;
-            color: #a6adc8;
-            font-size: 0.9em;
+        h1 {
+            margin-bottom: 25px;
         }
 
-        .header-bar {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        #download-all-btn {
-            font-family: 'JetBrains Mono', monospace;
-            background-color: #313244;
-            color: #cdd6f4;
-            border: 1px solid #45475a;
-            border-radius: 6px;
-            padding: 8px 16px;
-            font-size: 0.95em;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background-color 0.15s ease, border-color 0.15s ease;
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
         }
 
-        #download-all-btn svg {
-            width: 18px;
-            height: 18px;
-            flex-shrink: 0;
+        a {
+            color: #0067c0;
+            text-decoration: none;
         }
 
-        #download-all-btn:hover {
-            background-color: #45475a;
-            border-color: #585b70;
-        }
-
-        #download-all-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        a:hover {
+            text-decoration: underline;
         }
 
         @media (max-width: 600px) {
-            #download-all-btn {
-                width: 44px;
-                height: 44px;
-                padding: 0;
-                border-radius: 50%;
-                justify-content: center;
+            body {
+                margin: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Index of /mods/</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Last modified</th>
+        </tr>
+    </thead>
+
+    <tbody>
+"@
+
+foreach ($Directory in $Directories) {
+
+    $Html += @"
+        <tr>
+            <td>
+                [DIR]
+                <a href="$($Directory.Name)/">
+                    $($Directory.Name)/
+                </a>
+            </td>
+
+            <td>-</td>
+        </tr>
+"@
+}
+
+$Html += @"
+    </tbody>
+</table>
+
+</body>
+</html>
+"@
+
+$Utf8 = New-Object System.Text.UTF8Encoding($false)
+
+[System.IO.File]::WriteAllText(
+    (Join-Path $ModsPath "index.html"),
+    $Html,
+    $Utf8
+)
+
+# ============================================================
+# mods/files/index.html
+# ============================================================
+
+$FilesPath = Join-Path $ModsPath "files"
+$FilesIndexPath = Join-Path $FilesPath "index.html"
+
+if (Test-Path $FilesPath) {
+
+    $JarFiles = Get-ChildItem `
+        -Path $FilesPath `
+        -Filter "*.jar" `
+        -File |
+        Sort-Object Name
+
+    $Html = @"
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+    <title>Index of /mods/files/</title>
+
+    <style>
+        body {
+            font-family: -apple-system, "Segoe UI", "Inter";
+            margin: 40px;
+            background: #000;
+            color: #fff;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .toolbar {
+            margin-bottom: 25px;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            background: #0078d4;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #106ebe;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        a {
+            color: #0067c0;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .size {
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                margin: 15px;
             }
 
-            #download-all-btn .btn-label {
+            th:nth-child(3),
+            td:nth-child(3) {
                 display: none;
             }
         }
     </style>
 </head>
+
 <body>
-    <div class="header-bar">
-        <h1>Index of /$TitlePath/</h1>
-        <div>
-            <button id="download-all-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                <span class="btn-label">Скачать всё</span>
-            </button>
-            <span id="download-status"></span>
-        </div>
-    </div>
-    $downloadScript
-    <hr>
-    <table>
+
+<h1>Index of /mods/files/</h1>
+
+<div class="toolbar">
+    <button onclick="downloadAll()">
+        &#1057;&#1082;&#1072;&#1095;&#1072;&#1090;&#1100; &#1074;&#1089;&#1077; .jar
+    </button>
+</div>
+
+<table>
+    <thead>
         <tr>
             <th>Name</th>
             <th>Last modified</th>
             <th>Size</th>
         </tr>
-        <tr>
-            <td><a href="../">../</a></td>
-            <td>-</td>
-            <td>-</td>
-        </tr>
+    </thead>
+
+    <tbody>
 "@
 
-    $filesCount = 0
-    $dirsCount = 0
+    foreach ($Jar in $JarFiles) {
 
-    foreach ($entry in $entries) {
-        if ($entry.Name -eq "index.html") {
-            continue  # �� ���������� ��� ������ � ��� �� ������
-        }
+        $Size = Format-Size $Jar.Length
 
-        $mtime = $entry.LastWriteTime.ToString("dd-MMM-yyyy HH:mm")
+        $Modified = $Jar.LastWriteTime.ToString(
+            "dd-MMM-yyyy HH:mm"
+        )
 
-        if ($entry.PSIsContainer) {
-            $displayName = "$($entry.Name)/"
-            $href = "$($entry.Name)/"
-            $sizeStr = "-"
-            $dirsCount++
-        } else {
-            $displayName = $entry.Name
-            $href = $entry.Name
-            $sizeStr = Format-Size -SizeBytes $entry.Length
-            $filesCount++
-        }
-
-        $html += @"
-
+        $Html += @"
         <tr>
-            <td><a href="$href">$displayName</a></td>
-            <td>$mtime</td>
-            <td>$sizeStr</td>
+            <td>
+                <a href="$($Jar.Name)">
+                    $($Jar.Name)
+                </a>
+            </td>
+
+            <td>$Modified</td>
+
+            <td class="size">
+                $Size
+            </td>
         </tr>
 "@
     }
 
-    $html += @"
+    $Html += @"
+    </tbody>
+</table>
 
-    </table>
-    <hr>
+<script>
+
+const jarFiles = [
+"@
+
+    foreach ($Jar in $JarFiles) {
+
+        $Html += @"
+    "$($Jar.Name)",
+"@
+    }
+
+    $Html += @"
+];
+
+async function downloadAll() {
+
+    if (jarFiles.length === 0) {
+        alert("JAR files not found.");
+        return;
+    }
+
+    if (!confirm(
+        "Files to download: " +
+        jarFiles.length +
+        ". Continue?"
+    )) {
+        return;
+    }
+
+    for (const file of jarFiles) {
+
+        const link = document.createElement("a");
+
+        link.href = file;
+        link.download = file;
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.remove();
+
+        await new Promise(
+            resolve => setTimeout(resolve, 500)
+        );
+    }
+}
+
+</script>
+
 </body>
 </html>
 "@
 
-    $outputPath = Join-Path $DirPath "index.html"
-    [System.IO.File]::WriteAllText($outputPath, $html, [System.Text.Encoding]::UTF8)
+    [System.IO.File]::WriteAllText(
+        $FilesIndexPath,
+        $Html,
+        $Utf8
+    )
 
-    Write-Host "OK: $outputPath (������: $filesCount, �����: $dirsCount)"
+    Write-Host "mods/index.html updated"
+    Write-Host "mods/files/index.html updated"
+    Write-Host "JAR files found: $($JarFiles.Count)"
+}
+else {
+
+    Write-Host "mods/files directory not found!"
 }
 
-function Walk-AndGenerate {
-    param([string]$RootDir)
-
-    if (-not (Test-Path -LiteralPath $RootDir -PathType Container)) {
-        Write-Host "������: ����� $RootDir �� �������!"
-        return
-    }
-
-    # ���� �������� ����� + ��� �������� ����������
-    $allDirs = @(Get-Item -LiteralPath $RootDir) + (Get-ChildItem -LiteralPath $RootDir -Recurse -Directory)
-
-    foreach ($dir in $allDirs) {
-        $titlePath = $dir.FullName.Substring((Get-Item -LiteralPath $RootDir).FullName.Length).TrimStart('\', '/')
-        if ($titlePath -eq "") {
-            $titlePath = (Split-Path -Leaf $RootDir)
-        } else {
-            $titlePath = "$(Split-Path -Leaf $RootDir)/$($titlePath -replace '\\','/')"
-        }
-        Generate-Index -DirPath $dir.FullName -TitlePath $titlePath
-    }
-}
-
-Walk-AndGenerate -RootDir $RootDir
+Write-Host ""
+Write-Host "Done!"
