@@ -159,7 +159,6 @@ async function logout() {
 
 function renderAuthUI() {
   renderHeaderUser();
-  renderSidebarAuth();
 }
 
 // Профиль (или кнопка "Войти") в верхней панели
@@ -204,52 +203,7 @@ function renderHeaderUser() {
   }
 }
 
-// Форма входа в сайдбаре — только для гостей
-function renderSidebarAuth() {
-  const box = document.getElementById('authBox');
-  if (!box) return;
 
-  if (currentUserNickname) {
-    box.innerHTML = '';
-    return;
-  }
-
-  box.innerHTML = `
-    <div class="auth-box">
-      <button id="googleLoginBtn">Войти через Google</button>
-      <details class="auth-email-details">
-        <summary>или по email</summary>
-        <input id="authEmail" type="email" placeholder="Email">
-        <input id="authPassword" type="password" placeholder="Пароль">
-        <input id="authNickname" placeholder="Ник (для регистрации)" maxlength="30">
-        <div class="auth-buttons-row">
-          <button id="loginBtn">Войти</button>
-          <button id="registerBtn">Регистрация</button>
-        </div>
-      </details>
-    </div>
-  `;
-
-  document.getElementById('googleLoginBtn').addEventListener('click', loginWithGoogle);
-
-  document.getElementById('loginBtn').addEventListener('click', () => {
-    const email = document.getElementById('authEmail').value.trim();
-    const password = document.getElementById('authPassword').value;
-    if (!email || !password) return;
-    loginWithEmail(email, password);
-  });
-
-  document.getElementById('registerBtn').addEventListener('click', () => {
-    const email = document.getElementById('authEmail').value.trim();
-    const password = document.getElementById('authPassword').value;
-    const nickname = document.getElementById('authNickname').value.trim();
-    if (!email || !password || !nickname) {
-      alert('Заполните email, пароль и ник');
-      return;
-    }
-    registerWithEmail(email, password, nickname);
-  });
-}
 
 function updateNicknameField() {
   const field = document.getElementById('nickname');
