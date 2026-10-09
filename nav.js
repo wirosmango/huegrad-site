@@ -55,9 +55,5 @@ document.addEventListener('DOMContentLoaded', () => {
         dragThreshold: 2
       }).mount();
     });
-
-    console.log('Слайдеры успешно инициализированы');
-  } else {
-    console.warn('Glide не загружен. Проверь подключение glide.min.js перед nav.js');
   }
 });
