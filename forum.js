@@ -3,9 +3,9 @@
 // ============================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
-  getFirestore, collection, addDoc, doc, getDoc, setDoc,
-  query, where, orderBy, onSnapshot, serverTimestamp,
-  increment, runTransaction
+  getFirestore, collection, addDoc, doc, getDoc, getDocs, setDoc, updateDoc, writeBatch,
+  query, where, orderBy, limit, startAt, endAt, documentId,
+  onSnapshot, serverTimestamp, increment, runTransaction
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 import {
   getAuth, signInAnonymously, onAuthStateChanged,
@@ -50,6 +50,15 @@ let currentUserId = null;
 let currentUserNickname = null; // null для анонимных
 let currentUserPhoto = null;
 
+let currentTopicTitle = '';
+let pendingScrollPostId = null;
+let registrationInProgress = false;
+
+let notifications = [];
+let unsubscribeNotifications = null;
+let notificationsUid = null;
+let notificationsLoaded = false;
+
 let authReadyResolve;
 const authReady = new Promise((resolve) => { authReadyResolve = resolve; });
 
@@ -60,6 +69,55 @@ function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (c) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[c]));
+}
+
+// Ник: 2–30 символов, буквы/цифры/пробел/_ . -, без . - пробела в конце
+const NICK_RE = /^[\p{L}\p{N}][\p{L}\p{N}_. -]{0,28}[\p{L}\p{N}_]$/u;
+
+// @ник  или  @[Ник с пробелом]  (группа 1 — #N, 2/3 — упоминание)
+const TOKEN_RE = /#(\d+)|(?<![\p{L}\p{N}_])@(?:\[([^\]\n]{2,30})\]|([\p{L}\p{N}_.-]{2,30}))/gu;
+
+function sanitizeNick(raw) {
+  const s = String(raw || '')
+    .replace(/[^\p{L}\p{N}_. -]/gu, '')
+    .replace(/^[^\p{L}\p{N}]+/u, '')
+    .slice(0, 30)
+    .replace(/[. -]+$/, '');
+  return s.length >= 2 ? s : 'Пользователь';
+}
+
+// ники, упомянутые в тексте (в нижнем регистре, без дублей, без кода)
+function extractMentions(text) {
+  const clean = text.replace(/```[\s\S]*?```|`[^`\n]*`/g, '');
+  const found = new Set();
+  for (const m of clean.matchAll(TOKEN_RE)) {
+    const raw = m[2] || m[3];
+    if (!raw) continue;
+    const nick = raw.trim().replace(/[.\-]+$/, '').toLowerCase();
+    if (nick.length >= 2) found.add(nick);
+  }
+  return [...found];
+}
+
+function showToast(text) {
+  const t = document.createElement('div');
+  t.className = 'wui-toast';
+  t.textContent = text;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 200);
+  }, 4000);
+}
+
+function scrollToPost(postId) {
+  const el = document.querySelector(`[data-post-id="${CSS.escape(postId)}"]`);
+  if (!el) return false;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.classList.add('highlight');
+  setTimeout(() => el.classList.remove('highlight'), 1500);
+  return true;
 }
 
 function avatarColor(name) {
@@ -128,18 +186,74 @@ async function loginWithGoogle() {
   }
 }
 
+// Закрепляет ник за аккаунтом (уникальность гарантируют правила Firestore)
+async function ensureUsername(user) {
+  const mine = await getDocs(
+    query(collection(db, 'usernames'), where('uid', '==', user.uid), limit(1))
+  );
+  if (!mine.empty) return mine.docs[0].data().nickname;
+
+  const base = sanitizeNick(user.displayName);
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const nick = attempt === 0
+      ? base
+      : `${base.slice(0, 26)}${Math.floor(1000 + Math.random() * 9000)}`;
+    try {
+      await setDoc(doc(db, 'usernames', nick.toLowerCase()), {
+        uid: user.uid,
+        nickname: nick,
+        createdAt: serverTimestamp()
+      });
+      if (user.displayName !== nick) await updateProfile(user, { displayName: nick });
+      return nick;
+    } catch (err) {
+      if (err.code !== 'permission-denied') throw err; // ник занят — пробуем другой
+    }
+  }
+  return null;
+}
+
+async function applyUsername(user) {
+  try {
+    const nick = await ensureUsername(user);
+    if (nick && nick !== currentUserNickname) {
+      currentUserNickname = nick;
+      renderAuthUI();
+      updateNicknameField();
+      if (lastPostsSnapshot) renderPosts(lastPostsSnapshot);
+    }
+  } catch (err) {
+    console.error('Не удалось закрепить ник:', err);
+  }
+}
+
 async function registerWithEmail(email, password, nickname) {
+  nickname = nickname.trim();
+  if (!NICK_RE.test(nickname)) {
+    showAuthError('Ник: 2–30 символов, буквы, цифры, пробел и _ . - (не в конце)');
+    return;
+  }
+
+  try {
+    const taken = await getDoc(doc(db, 'usernames', nickname.toLowerCase()));
+    if (taken.exists()) {
+      showAuthError('Этот ник уже занят');
+      return;
+    }
+  } catch (err) {
+    console.error('Не удалось проверить ник:', err);
+  }
+
+  registrationInProgress = true; // чтобы onAuthStateChanged не закрепил ник раньше времени
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(cred.user, { displayName: nickname.slice(0, 30) });
-    // updateProfile не вызывает onAuthStateChanged — обновим вручную
-    currentUserNickname = nickname.slice(0, 30);
-    renderAuthUI();
-    updateNicknameField();
-    if (lastPostsSnapshot) renderPosts(lastPostsSnapshot);
+    await updateProfile(cred.user, { displayName: nickname });
+    await applyUsername(cred.user);
   } catch (err) {
     console.error('Ошибка регистрации:', err);
     showAuthError(translateAuthError(err.code));
+  } finally {
+    registrationInProgress = false;
   }
 }
 
@@ -166,10 +280,39 @@ function renderHeaderUser() {
   const box = document.getElementById('headerUser');
   if (!box) return;
 
-  box.classList.remove('open');
+  box.classList.remove('open', 'open-notif');
   box.innerHTML = '';
 
   if (currentUserNickname) {
+    // --- колокольчик ---
+    const bell = document.createElement('button');
+    bell.type = 'button';
+    bell.className = 'header-bell';
+    bell.setAttribute('aria-label', 'Уведомления');
+    bell.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+      </svg>
+      <span class="notif-badge" id="notifBadge" hidden></span>
+    `;
+    bell.addEventListener('click', (e) => {
+      e.stopPropagation();
+      box.classList.remove('open');
+      box.classList.toggle('open-notif');
+    });
+
+    const notifMenu = document.createElement('div');
+    notifMenu.className = 'notif-menu';
+    notifMenu.innerHTML = `
+      <div class="notif-head">
+        <span>Уведомления</span>
+        <button type="button" id="notifReadAll">Прочитать все</button>
+      </div>
+      <div id="notifList"></div>
+    `;
+    notifMenu.addEventListener('click', (e) => e.stopPropagation());
+
+    // --- профиль ---
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'header-user-btn';
@@ -181,6 +324,7 @@ function renderHeaderUser() {
     btn.append(createAvatar(currentUserNickname, currentUserPhoto, 32), name);
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
+      box.classList.remove('open-notif');
       box.classList.toggle('open');
     });
 
@@ -192,7 +336,10 @@ function renderHeaderUser() {
     outBtn.addEventListener('click', logout);
     menu.appendChild(outBtn);
 
-    box.append(btn, menu);
+    box.append(bell, btn, menu, notifMenu);
+
+    notifMenu.querySelector('#notifReadAll').addEventListener('click', markAllNotificationsRead);
+    renderNotifications();
   } else {
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -213,21 +360,20 @@ function updateNicknameField() {
 // закрывать меню профиля по клику в любое другое место
 document.addEventListener('click', () => {
   const box = document.getElementById('headerUser');
-  if (box) box.classList.remove('open');
+  if (box) box.classList.remove('open', 'open-notif');
 });
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    // ещё не вошли (или только что вышли) — ждём анонимного входа
     currentUserId = null;
     currentUserNickname = null;
     currentUserPhoto = null;
+    stopNotifications();
     renderAuthUI();
     return;
   }
 
   currentUserId = user.uid;
-  // email публично не показываем: если имени ещё нет — нейтральная подпись
   currentUserNickname = user.isAnonymous ? null : (user.displayName || 'Пользователь');
   currentUserPhoto = user.isAnonymous ? null : user.photoURL;
 
@@ -236,7 +382,13 @@ onAuthStateChanged(auth, (user) => {
 
   if (currentUserNickname && authDialogEl) closeAuthDialog();
 
-  // перерисовываем то, что зависит от пользователя (кнопки лайков, опрос)
+  if (user.isAnonymous) {
+    stopNotifications();
+  } else {
+    startNotifications(user.uid);
+    if (!registrationInProgress) applyUsername(user);
+  }
+
   if (lastPostsSnapshot) renderPosts(lastPostsSnapshot);
   if (lastPollSnapshot && currentTopicId) renderPollFrom(lastPollSnapshot, currentTopicId);
 
@@ -458,6 +610,7 @@ async function openTopic(topicId, title) {
   await authReady; // ждём, пока появится uid (нужен для лайков и опросов)
 
   currentTopicId = topicId;
+  currentTopicTitle = title;
   lastPostsSnapshot = null;
   lastPollSnapshot = null;
   history.pushState({}, '', `?id=${topicId}`);
@@ -483,6 +636,7 @@ async function openTopic(topicId, title) {
         <input id="nickname" placeholder="Ваш ник" maxlength="30">
         <div class="input-wrapper">
           <textarea id="message" placeholder="Сообщение (поддерживается **жирный**, *курсив*, \`код\`, ![alt](ссылка))" maxlength="2000"></textarea>
+          <div class="mention-popup" id="mentionPopup" hidden></div>
           <button id="sendBtn">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"/>
@@ -498,6 +652,7 @@ async function openTopic(topicId, title) {
   setSidebarOpen(false); // сворачиваем шторку тем после выбора темы
   updateNicknameField();
   document.getElementById('sendBtn').addEventListener('click', sendPost);
+  setupMentionAutocomplete();
 
   // --- Посты ---
   if (unsubscribePosts) unsubscribePosts();
@@ -543,6 +698,7 @@ function renderPosts(snapshot) {
     const div = document.createElement('div');
     div.className = 'post';
     div.id = `post-${number}`;
+    div.dataset.postId = postId;
 
     const numEl = document.createElement('span');
     numEl.className = 'post-number';
@@ -593,6 +749,8 @@ function renderPosts(snapshot) {
 
     container.appendChild(div);
   });
+
+  if (pendingScrollPostId && scrollToPost(pendingScrollPostId)) pendingScrollPostId = null;
 }
 
 // ============================================================
@@ -622,38 +780,62 @@ function linkifyPostRefs(container) {
   let node;
   while ((node = walker.nextNode())) textNodes.push(node);
 
+  const myNick = currentUserNickname ? currentUserNickname.toLowerCase() : null;
+
   textNodes.forEach((textNode) => {
+    // внутри кода и ссылок ничего не размечаем
+    if (textNode.parentElement && textNode.parentElement.closest('code, pre, a')) return;
+
     const text = textNode.textContent;
-    const regex = /#(\d+)/g;
-    if (!regex.test(text)) return;
-    regex.lastIndex = 0;
+    TOKEN_RE.lastIndex = 0;
+    if (!TOKEN_RE.test(text)) return;
+    TOKEN_RE.lastIndex = 0;
 
     const fragment = document.createDocumentFragment();
     let lastIndex = 0;
     let match;
 
-    while ((match = regex.exec(text)) !== null) {
+    while ((match = TOKEN_RE.exec(text)) !== null) {
       if (match.index > lastIndex) {
         fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
       }
 
-      const num = match[1];
-      const link = document.createElement('a');
-      link.href = `#post-${num}`;
-      link.textContent = `#${num}`;
-      link.className = 'post-ref';
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const target = document.getElementById(`post-${num}`);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          target.classList.add('highlight');
-          setTimeout(() => target.classList.remove('highlight'), 1500);
-        }
-      });
-      fragment.appendChild(link);
+      if (match[1]) {
+        // --- ссылка на пост #N ---
+        const num = match[1];
+        const link = document.createElement('a');
+        link.href = `#post-${num}`;
+        link.textContent = `#${num}`;
+        link.className = 'post-ref';
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = document.getElementById(`post-${num}`);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            target.classList.add('highlight');
+            setTimeout(() => target.classList.remove('highlight'), 1500);
+          }
+        });
+        fragment.appendChild(link);
+      } else {
+        // --- упоминание @ник ---
+        const raw = (match[2] || match[3]).trim();
+        const nick = match[2] ? raw : raw.replace(/[.\-]+$/, '');
+        const shownLength = match[2] ? match[0].length : 1 + nick.length;
 
-      lastIndex = regex.lastIndex;
+        const span = document.createElement('span');
+        span.className = 'mention' + (myNick && nick.toLowerCase() === myNick ? ' mention-me' : '');
+        span.textContent = match[2] ? `@${nick}` : `@${nick}`;
+        fragment.appendChild(span);
+
+        // вернуть в текст срезанные точки/дефисы на конце
+        const consumedEnd = match.index + shownLength;
+        if (consumedEnd < TOKEN_RE.lastIndex) {
+          fragment.appendChild(document.createTextNode(text.slice(consumedEnd, TOKEN_RE.lastIndex)));
+        }
+      }
+
+      lastIndex = TOKEN_RE.lastIndex;
     }
 
     if (lastIndex < text.length) {
@@ -678,20 +860,38 @@ async function sendPost() {
   const message = messageInput.value.trim();
   if (!nickname || !message) return;
 
+  // гость не может писать под ником, который занят зарегистрированным пользователем
+  if (!currentUserNickname) {
+    try {
+      const claimed = await getDoc(doc(db, 'usernames', nickname.toLowerCase()));
+      if (claimed.exists()) {
+        alert('Этот ник занят зарегистрированным пользователем. Выберите другой или войдите.');
+        return;
+      }
+    } catch (err) {
+      /* ник с недопустимыми для id символами — не занят, идём дальше */
+    }
+  }
+
   const originalContent = sendBtn.innerHTML;
   sendBtn.innerHTML = '<div class="spinner" style="width:18px;height:18px;border-width:2px;"></div>';
   sendBtn.disabled = true;
 
   try {
-    await addDoc(postsRef, {
+    const postRef = await addDoc(postsRef, {
       topicId: currentTopicId,
       nickname: nickname.slice(0, 30),
       message: message.slice(0, 2000),
       createdAt: serverTimestamp(),
       likes: 0,
-      ...(currentUserPhoto ? { photoURL: currentUserPhoto } : {})
+      ...(currentUserPhoto ? { photoURL: currentUserPhoto } : {}),
+      ...(currentUserNickname ? { authorUid: currentUserId } : {})
     });
     messageInput.value = '';
+
+    // уведомления отправляем отдельно: их сбой не должен ломать публикацию
+    notifyRecipients(postRef.id, message.slice(0, 2000), nickname)
+      .catch((err) => console.error('Не удалось отправить уведомления:', err));
   } catch (err) {
     console.error('Ошибка отправки поста:', err);
     alert('Не удалось отправить сообщение');
@@ -742,24 +942,49 @@ async function renderPollFrom(snap, topicId) {
   const container = document.getElementById('pollContainer');
   if (!container) return;
 
+  // ---------- Опроса ещё нет: форма создания ----------
   if (!snap.exists()) {
     // не затираем форму, если пользователь уже что-то вводит
     if (container.querySelector('#pollQuestion')) return;
 
     container.innerHTML = `
-      <details class="poll-create">
-        <summary>+ Создать опрос</summary>
-        <input id="pollQuestion" placeholder="Вопрос" maxlength="200">
-        <input class="poll-option-input" placeholder="Вариант 1" maxlength="100">
-        <input class="poll-option-input" placeholder="Вариант 2" maxlength="100">
-        <input class="poll-option-input" placeholder="Вариант 3 (необязательно)" maxlength="100">
-        <button id="createPollBtn">Создать опрос</button>
+      <details class="wui-expander">
+        <summary>
+          <span>Создать опрос</span>
+          <svg class="wui-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <div class="wui-expander-body">
+          <label class="wui-field">
+            <span>Вопрос</span>
+            <input id="pollQuestion" maxlength="200">
+          </label>
+          <div id="pollOptionInputs">
+            <label class="wui-field"><span>Вариант 1</span><input class="poll-option-input" maxlength="100"></label>
+            <label class="wui-field"><span>Вариант 2</span><input class="poll-option-input" maxlength="100"></label>
+          </div>
+          <div class="wui-poll-actions">
+            <button class="wui-btn" id="addPollOptionBtn" type="button">+ Вариант</button>
+            <button class="wui-btn wui-btn-accent" id="createPollBtn" type="button">Создать опрос</button>
+          </div>
+        </div>
       </details>
     `;
+
+    const addBtn = document.getElementById('addPollOptionBtn');
+    addBtn.addEventListener('click', () => {
+      const wrap = document.getElementById('pollOptionInputs');
+      const count = wrap.querySelectorAll('.poll-option-input').length;
+      if (count >= 6) return;
+      wrap.insertAdjacentHTML('beforeend',
+        `<label class="wui-field"><span>Вариант ${count + 1}</span><input class="poll-option-input" maxlength="100"></label>`);
+      if (count + 1 >= 6) addBtn.disabled = true;
+    });
+
     document.getElementById('createPollBtn').addEventListener('click', () => createPoll(topicId));
     return;
   }
 
+  // ---------- Опрос есть ----------
   const poll = snap.data();
   const votes = poll.votes || {};
   const totalVotes = Object.values(votes).reduce((a, b) => a + b, 0);
@@ -779,33 +1004,78 @@ async function renderPollFrom(snap, topicId) {
   const containerNow = document.getElementById('pollContainer');
   if (!containerNow) return;
 
-  const optionsHtml = poll.options.map((opt, i) => {
-    const count = votes[i] || 0;
-    const percent = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
-    const isChosen = votedIndex === i;
+  // запоминаем выбранный, но ещё не отправленный вариант (чтобы не сбросился)
+  const prevChecked = containerNow.querySelector('input[name="pollOption"]:checked');
+  const prevValue = prevChecked ? prevChecked.value : null;
 
-    if (votedIndex !== null) {
+  let bodyHtml;
+
+  if (votedIndex === null) {
+    // --- варианты друг под другом, как RadioButtons ---
+    const radios = poll.options.map((opt, i) => `
+      <label class="wui-radio">
+        <input type="radio" name="pollOption" value="${i}">
+        <span class="wui-radio-dot"></span>
+        <span class="wui-radio-label">${escapeHtml(opt)}</span>
+      </label>
+    `).join('');
+
+    bodyHtml = `
+      <div class="wui-poll-options" role="radiogroup">${radios}</div>
+      <div class="wui-poll-footer">
+        <button class="wui-btn wui-btn-accent" id="pollVoteBtn" type="button" disabled>Проголосовать</button>
+        <span class="wui-poll-total">Всего голосов: ${totalVotes}</span>
+      </div>
+    `;
+  } else {
+    // --- результаты: строки с ProgressBar ---
+    const rows = poll.options.map((opt, i) => {
+      const count = votes[i] || 0;
+      const percent = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
+      const isChosen = votedIndex === i;
       return `
-        <div class="poll-result ${isChosen ? 'poll-result-chosen' : ''}">
-          <div class="poll-result-label">${escapeHtml(opt)} ${isChosen ? '✓' : ''} — ${percent}% (${count})</div>
-          <div class="poll-bar"><div class="poll-bar-fill" style="width:${percent}%"></div></div>
+        <div class="wui-poll-result ${isChosen ? 'chosen' : ''}">
+          <div class="wui-poll-result-row">
+            <span class="wui-poll-result-name">${escapeHtml(opt)}${isChosen ? ' ✓' : ''}</span>
+            <span class="wui-poll-result-value">${percent}% · ${count}</span>
+          </div>
+          <div class="wui-progress"><div class="wui-progress-bar" style="width:${percent}%"></div></div>
         </div>
       `;
-    }
-    return `<button class="poll-option-btn" data-index="${i}">${escapeHtml(opt)}</button>`;
-  }).join('');
+    }).join('');
+
+    bodyHtml = `
+      <div class="wui-poll-options">${rows}</div>
+      <div class="wui-poll-footer">
+        <span class="wui-poll-total">Всего голосов: ${totalVotes}</span>
+      </div>
+    `;
+  }
 
   containerNow.innerHTML = `
-    <div class="poll-box">
-      <div class="poll-question">${escapeHtml(poll.question)}</div>
-      ${optionsHtml}
-      ${votedIndex !== null ? `<small>Всего голосов: ${totalVotes}</small>` : ''}
+    <div class="wui-poll">
+      <div class="wui-poll-question">${escapeHtml(poll.question)}</div>
+      ${bodyHtml}
     </div>
   `;
 
   if (votedIndex === null) {
-    containerNow.querySelectorAll('.poll-option-btn').forEach((btn) => {
-      btn.addEventListener('click', () => votePoll(topicId, Number(btn.dataset.index)));
+    const voteBtn = containerNow.querySelector('#pollVoteBtn');
+    const inputs = containerNow.querySelectorAll('input[name="pollOption"]');
+
+    inputs.forEach((input) => {
+      input.addEventListener('change', () => { voteBtn.disabled = false; });
+      if (prevValue !== null && input.value === prevValue) {
+        input.checked = true;
+        voteBtn.disabled = false;
+      }
+    });
+
+    voteBtn.addEventListener('click', () => {
+      const selected = containerNow.querySelector('input[name="pollOption"]:checked');
+      if (!selected) return;
+      voteBtn.disabled = true;
+      votePoll(topicId, Number(selected.value));
     });
   }
 }
@@ -855,6 +1125,283 @@ async function votePoll(topicId, optionIndex) {
   } catch (err) {
     console.error('Ошибка голосования:', err);
   }
+}
+
+// ============================================================
+// Упоминания и уведомления
+// ============================================================
+async function notifyRecipients(postId, message, authorNick) {
+  const recipients = new Map(); // uid получателя -> 'mention' | 'reply'
+  const clean = message.replace(/```[\s\S]*?```|`[^`\n]*`/g, '');
+
+  // --- упоминания @ник ---
+  const nicks = extractMentions(message).slice(0, 5);
+  const nickSnaps = await Promise.all(
+    nicks.map((n) => getDoc(doc(db, 'usernames', n)).catch(() => null))
+  );
+  nickSnaps.forEach((s) => {
+    if (s && s.exists()) recipients.set(s.data().uid, 'mention');
+  });
+      console.log('[mentions] найдено в тексте:', nicks, 'есть в usernames:', nickSnaps.map((s) => !!(s && s.exists())));
+
+  // --- ответы #N (номер = позиция поста в теме) ---
+  if (lastPostsSnapshot) {
+    const docs = lastPostsSnapshot.docs;
+    [...clean.matchAll(/#(\d+)/g)].slice(0, 5).forEach((m) => {
+      const target = docs[Number(m[1]) - 1];
+      const uid = target && target.data().authorUid;
+      if (uid) recipients.set(uid, 'reply');
+    });
+  }
+
+  recipients.delete(currentUserId); // себя не уведомляем
+  const list = [...recipients].slice(0, 10);
+  if (!list.length) return;
+
+  const batch = writeBatch(db);
+      console.log('[mentions] получатели:', list);
+  list.forEach(([toUid, type]) => {
+    batch.set(doc(db, 'notifications', `${postId}_${toUid}`), {
+      type,
+      toUid,
+      fromUid: currentUserId,
+      fromNickname: authorNick.slice(0, 30),
+      fromPhoto: currentUserPhoto || null,
+      topicId: currentTopicId,
+      topicTitle: String(currentTopicTitle).slice(0, 100),
+      postId,
+      excerpt: message.replace(/\s+/g, ' ').slice(0, 140),
+      createdAt: serverTimestamp(),
+      read: false
+    });
+  });
+  await batch.commit();
+}
+
+function startNotifications(uid) {
+  if (notificationsUid === uid && unsubscribeNotifications) return;
+  stopNotifications();
+
+  notificationsUid = uid;
+  notificationsLoaded = false;
+
+  unsubscribeNotifications = onSnapshot(
+    query(collection(db, 'notifications'), where('toUid', '==', uid)),
+    (snap) => {
+      notifications = snap.docs
+        .map((d) => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => {
+          const ta = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : Date.now();
+          const tb = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : Date.now();
+          return tb - ta;
+        })
+        .slice(0, 30);
+
+      if (notificationsLoaded) {
+        snap.docChanges().forEach((ch) => {
+          const n = ch.doc.data();
+          if (ch.type === 'added' && !n.read) {
+            showToast(`${n.fromNickname} ${n.type === 'reply' ? 'ответил(а) на ваше сообщение' : 'упомянул(а) вас'}`);
+          }
+        });
+      }
+      notificationsLoaded = true;
+      renderNotifications();
+    },
+    (err) => console.error('Ошибка уведомлений:', err)
+  );
+}
+
+function stopNotifications() {
+  if (unsubscribeNotifications) unsubscribeNotifications();
+  unsubscribeNotifications = null;
+  notificationsUid = null;
+  notifications = [];
+  renderNotifications();
+}
+
+function renderNotifications() {
+  const unread = notifications.filter((n) => !n.read).length;
+
+  const badge = document.getElementById('notifBadge');
+  if (badge) {
+    badge.textContent = unread > 9 ? '9+' : String(unread);
+    badge.hidden = unread === 0;
+  }
+
+  const list = document.getElementById('notifList');
+  if (!list) return;
+  list.innerHTML = '';
+
+  if (!notifications.length) {
+    const empty = document.createElement('div');
+    empty.className = 'notif-empty';
+    empty.textContent = 'Пока нет уведомлений';
+    list.appendChild(empty);
+    return;
+  }
+
+  notifications.forEach((n) => {
+    const item = document.createElement('button');
+    item.type = 'button';
+    item.className = 'notif-item' + (n.read ? '' : ' unread');
+
+    const body = document.createElement('div');
+    body.className = 'notif-body';
+
+    const title = document.createElement('div');
+    title.className = 'notif-title';
+    const action = n.type === 'reply' ? 'ответил(а) на ваше сообщение в' : 'упомянул(а) вас в';
+    title.textContent = `${n.fromNickname} ${action} «${n.topicTitle}»`;
+
+    const excerpt = document.createElement('div');
+    excerpt.className = 'notif-excerpt';
+    excerpt.textContent = n.excerpt;
+
+    const time = document.createElement('div');
+    time.className = 'notif-time';
+    time.textContent = n.createdAt && n.createdAt.toDate
+      ? n.createdAt.toDate().toLocaleString('ru-RU', {
+          day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit'
+        })
+      : 'только что';
+
+    body.append(title, excerpt, time);
+    item.append(createAvatar(n.fromNickname, n.fromPhoto, 32), body);
+    item.addEventListener('click', () => openNotification(n));
+
+    list.appendChild(item);
+  });
+}
+
+function openNotification(n) {
+  if (!n.read) {
+    updateDoc(doc(db, 'notifications', n.id), { read: true })
+      .catch((err) => console.error('Не удалось отметить прочитанным:', err));
+  }
+
+  const box = document.getElementById('headerUser');
+  if (box) box.classList.remove('open', 'open-notif');
+
+  if (currentTopicId === n.topicId) {
+    if (!scrollToPost(n.postId)) pendingScrollPostId = n.postId;
+  } else {
+    pendingScrollPostId = n.postId;
+    openTopic(n.topicId, n.topicTitle);
+  }
+}
+
+async function markAllNotificationsRead() {
+  const unread = notifications.filter((n) => !n.read);
+  if (!unread.length) return;
+
+  const batch = writeBatch(db);
+  unread.forEach((n) => batch.update(doc(db, 'notifications', n.id), { read: true }));
+  try {
+    await batch.commit();
+  } catch (err) {
+    console.error('Не удалось отметить прочитанными:', err);
+  }
+}
+
+// ----- Подсказки ников при вводе @ -----
+function setupMentionAutocomplete() {
+  const textarea = document.getElementById('message');
+  const popup = document.getElementById('mentionPopup');
+  if (!textarea || !popup) return;
+
+  let items = [];
+  let active = 0;
+  let token = null;
+  let requestId = 0;
+
+  const hide = () => {
+    popup.hidden = true;
+    popup.innerHTML = '';
+    items = [];
+    token = null;
+  };
+
+  const pick = (i) => {
+    const nick = items[i];
+    if (!nick || !token) return;
+    const insert = (/\s/.test(nick) ? `@[${nick}]` : `@${nick}`) + ' ';
+    const v = textarea.value;
+    textarea.value = v.slice(0, token.start) + insert + v.slice(token.end);
+    const pos = token.start + insert.length;
+    textarea.setSelectionRange(pos, pos);
+    textarea.focus();
+    hide();
+  };
+
+  const render = () => {
+    popup.innerHTML = '';
+    items.forEach((nick, i) => {
+      const row = document.createElement('div');
+      row.className = 'mention-item' + (i === active ? ' active' : '');
+      const label = document.createElement('span');
+      label.textContent = nick;
+      row.append(createAvatar(nick, null, 22), label);
+      row.addEventListener('mousedown', (e) => {
+        e.preventDefault(); // не терять фокус textarea
+        pick(i);
+      });
+      popup.appendChild(row);
+    });
+    popup.hidden = items.length === 0;
+  };
+
+  textarea.addEventListener('input', async () => {
+    const caret = textarea.selectionStart;
+    const before = textarea.value.slice(0, caret);
+
+    const m =
+      /(?<![\p{L}\p{N}_])@\[([^\]\n]{0,30})$/u.exec(before) ||
+      /(?<![\p{L}\p{N}_])@([\p{L}\p{N}_.-]{0,30})$/u.exec(before);
+
+    if (!m || m[1].length < 1) { hide(); return; }
+
+    token = { start: m.index, end: caret };
+    const prefix = m[1].toLowerCase();
+    const myRequest = ++requestId;
+
+    try {
+      const snap = await getDocs(query(
+        collection(db, 'usernames'),
+        orderBy(documentId()),
+        startAt(prefix),
+        endAt(prefix + '\uf8ff'),
+        limit(5)
+      ));
+      if (myRequest !== requestId) return; // пришёл устаревший ответ
+      items = snap.docs.map((d) => d.data().nickname);
+      active = 0;
+      render();
+    } catch (err) {
+      console.error('Ошибка подсказок:', err);
+      hide();
+    }
+  });
+
+  textarea.addEventListener('keydown', (e) => {
+    if (popup.hidden || !items.length) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      active = (active + 1) % items.length;
+      render();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      active = (active - 1 + items.length) % items.length;
+      render();
+    } else if (e.key === 'Enter' || e.key === 'Tab') {
+      e.preventDefault();
+      pick(active);
+    } else if (e.key === 'Escape') {
+      hide();
+    }
+  });
+
+  textarea.addEventListener('blur', hide);
 }
 
 // ============================================================

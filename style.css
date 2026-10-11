@@ -2282,3 +2282,430 @@ ul.styled-list {
     transition: none;
   }
 }
+
+/* ===== WinUI 3: опросы ===== */
+.wui-poll,
+.wui-expander {
+  margin: 16px 0;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  font-family: 'Segoe UI Variable', 'Segoe UI', 'Inter', sans-serif;
+  color: #fff;
+}
+
+.wui-poll {
+  padding: 16px;
+}
+
+.wui-poll-question {
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  word-break: break-word;
+}
+
+/* варианты строго друг под другом */
+.wui-poll-options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* --- RadioButton --- */
+.wui-radio {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.wui-radio:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.wui-radio input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wui-radio-dot {
+  position: relative;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  transition: background 0.1s ease, border-color 0.1s ease;
+}
+
+.wui-radio-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  background: #fff;
+  border-radius: 50%;
+  transform: scale(0);
+  transition: transform 0.12s ease;
+}
+
+.wui-radio:hover .wui-radio-dot {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.wui-radio input:checked + .wui-radio-dot {
+  background: var(--wui-accent);
+  border-color: var(--wui-accent);
+}
+
+.wui-radio input:checked + .wui-radio-dot::after {
+  transform: scale(1);
+}
+
+.wui-radio input:focus-visible + .wui-radio-dot {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.wui-radio-label {
+  word-break: break-word;
+}
+
+/* --- нижняя строка --- */
+.wui-poll-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.wui-poll-total {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.54);
+}
+
+/* --- результаты --- */
+.wui-poll-result {
+  padding: 6px 10px 8px;
+}
+
+.wui-poll-result-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.wui-poll-result-name {
+  word-break: break-word;
+}
+
+.wui-poll-result-value {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-variant-numeric: tabular-nums;
+}
+
+.wui-poll-result.chosen .wui-poll-result-name {
+  font-weight: 600;
+}
+
+/* --- ProgressBar --- */
+.wui-progress {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.wui-progress-bar {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.wui-poll-result.chosen .wui-progress-bar {
+  background: var(--wui-accent);
+}
+
+/* --- Expander (создание опроса) --- */
+.wui-expander summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 14px;
+  list-style: none;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.wui-expander summary::-webkit-details-marker {
+  display: none;
+}
+
+.wui-expander summary:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.wui-chevron {
+  transition: transform 0.15s ease;
+}
+
+.wui-expander[open] .wui-chevron {
+  transform: rotate(180deg);
+}
+
+.wui-expander-body {
+  padding: 4px 16px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 16px;
+}
+
+.wui-poll-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.wui-poll-actions .wui-btn-accent {
+  flex: 1;
+}
+
+/* ===== Упоминания ===== */
+.mention {
+  padding: 0 4px;
+  background: rgba(138, 180, 255, 0.14);
+  color: #8ab4ff;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.mention-me {
+  background: rgba(255, 196, 0, 0.18);
+  color: #ffd666;
+}
+
+.mention-popup {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 60;
+  padding: 4px;
+  background: #2c2c2c;
+  border: 1px solid #454545;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  font-family: 'Segoe UI Variable', 'Segoe UI', 'Inter', sans-serif;
+}
+
+.mention-popup[hidden] {
+  display: none;
+}
+
+.mention-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.mention-item:hover,
+.mention-item.active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ===== Колокольчик и уведомления ===== */
+.header-user {
+  gap: 8px;
+}
+
+.header-bell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.06);
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.header-bell:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.notif-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  background: #c42b1c;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+
+.notif-badge[hidden] {
+  display: none;
+}
+
+.notif-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 100;
+  width: 340px;
+  max-width: calc(100vw - 24px);
+  max-height: 420px;
+  overflow-y: auto;
+  background: #2c2c2c;
+  color: #fff;
+  border: 1px solid #454545;
+  border-radius: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  font-family: 'Segoe UI Variable', 'Segoe UI', 'Inter', sans-serif;
+}
+
+.header-user.open-notif .notif-menu {
+  display: block;
+}
+
+.notif-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.notif-head button {
+  padding: 4px 8px;
+  background: transparent;
+  color: #8ab4ff;
+  border: none;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.notif-head button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.notif-empty {
+  padding: 24px 14px;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.54);
+}
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  color: inherit;
+  border: none;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.notif-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.notif-item.unread {
+  background: rgba(99, 102, 241, 0.14);
+}
+
+.notif-item.unread:hover {
+  background: rgba(99, 102, 241, 0.22);
+}
+
+.notif-body {
+  min-width: 0;
+}
+
+.notif-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
+.notif-excerpt {
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.notif-time {
+  margin-top: 2px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ===== Тост (InfoBar) ===== */
+.wui-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 1100;
+  max-width: calc(100vw - 32px);
+  padding: 10px 16px;
+  background: #2c2c2c;
+  color: #fff;
+  border: 1px solid #454545;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  font-family: 'Segoe UI Variable', 'Segoe UI', 'Inter', sans-serif;
+  font-size: 14px;
+  opacity: 0;
+  transform: translate(-50%, 16px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.wui-toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
