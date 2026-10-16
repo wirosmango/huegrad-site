@@ -5,6 +5,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/fireba
 import {
   getFirestore, collection, addDoc, doc, getDoc, getDocs, setDoc, updateDoc, writeBatch,
   query, where, orderBy, limit, startAt, endAt, documentId,
+  getAggregateFromServer, count, sum,
   onSnapshot, serverTimestamp, increment, runTransaction
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 import {
@@ -61,6 +62,9 @@ let notificationsLoaded = false;
 
 let authReadyResolve;
 const authReady = new Promise((resolve) => { authReadyResolve = resolve; });
+
+const profileCache = new Map(); // uid -> данные профиля (или null, если профиля нет)
+let profileDialogEl = null;
 
 // ============================================================
 // 5. Утилиты
@@ -334,7 +338,11 @@ function renderHeaderUser() {
     outBtn.type = 'button';
     outBtn.textContent = 'Выйти';
     outBtn.addEventListener('click', logout);
-    menu.appendChild(outBtn);
+    const profBtn = document.createElement('button');
+    profBtn.type = 'button';
+    profBtn.textContent = 'Мой профиль';
+    profBtn.addEventListener('click', () => openProfile(currentUserId));
+    menu.append(profBtn, outBtn);
 
     box.append(bell, btn, menu, notifMenu);
 
@@ -386,6 +394,7 @@ onAuthStateChanged(auth, (user) => {
     stopNotifications();
   } else {
     startNotifications(user.uid);
+    loadOwnProfile(user);
     if (!registrationInProgress) applyUsername(user);
   }
 
@@ -744,13 +753,28 @@ function renderPosts(snapshot) {
     meta.className = 'post-meta';
     meta.append(numEl, nickEl, dateEl);
 
-    head.append(createAvatar(p.nickname, p.photoURL, 36), meta);
+    const prof = p.authorUid ? profileCache.get(p.authorUid) : null;
+    const avatarEl = createAvatar(p.nickname, (prof && prof.photoURL) || p.photoURL, 36);
+
+    if (p.authorUid) {
+      avatarEl.classList.add('clickable');
+      nickEl.classList.add('clickable');
+      avatarEl.addEventListener('click', () => openProfile(p.authorUid));
+      nickEl.addEventListener('click', () => openProfile(p.authorUid));
+    }
+
+    head.append(avatarEl, meta);
     div.append(head, msgEl, likeBtn);
 
     container.appendChild(div);
   });
 
   if (pendingScrollPostId && scrollToPost(pendingScrollPostId)) pendingScrollPostId = null;
+
+  // подгружаем профили авторов и перерисовываем один раз, когда они появятся
+  ensureProfiles(docs.map((d) => d.data().authorUid).filter(Boolean)).then((added) => {
+    if (added && lastPostsSnapshot === snapshot) renderPosts(snapshot);
+  });
 }
 
 // ============================================================
@@ -826,6 +850,7 @@ function linkifyPostRefs(container) {
         const span = document.createElement('span');
         span.className = 'mention' + (myNick && nick.toLowerCase() === myNick ? ' mention-me' : '');
         span.textContent = match[2] ? `@${nick}` : `@${nick}`;
+        span.addEventListener('click', () => openProfileByNick(nick));
         fragment.appendChild(span);
 
         // вернуть в текст срезанные точки/дефисы на конце
@@ -1402,6 +1427,207 @@ function setupMentionAutocomplete() {
   });
 
   textarea.addEventListener('blur', hide);
+}
+
+// ============================================================
+// Профили пользователей
+// ============================================================
+
+// Подгружает профили авторов; true — если что-то новое попало в кеш
+async function ensureProfiles(uids) {
+  const missing = [...new Set(uids)].filter((u) => u && !profileCache.has(u));
+  if (!missing.length) return false;
+
+  await Promise.all(missing.map(async (uid) => {
+    try {
+      const snap = await getDoc(doc(db, 'profiles', uid));
+      profileCache.set(uid, snap.exists() ? snap.data() : null);
+    } catch (err) {
+      profileCache.set(uid, null);
+    }
+  }));
+  return true;
+}
+
+// Свой профиль: создаём при первом входе, берём оттуда аватарку
+async function loadOwnProfile(user) {
+  try {
+    await ensureProfiles([user.uid]);
+    let prof = profileCache.get(user.uid);
+
+    if (!prof) {
+      prof = { bio: '', photoURL: user.photoURL || null };
+      await setDoc(doc(db, 'profiles', user.uid), { ...prof, updatedAt: serverTimestamp() });
+      profileCache.set(user.uid, prof);
+    }
+
+    const photo = prof.photoURL || user.photoURL || null;
+    if (user.uid === currentUserId && photo !== currentUserPhoto) {
+      currentUserPhoto = photo;
+      renderAuthUI();
+      if (lastPostsSnapshot) renderPosts(lastPostsSnapshot);
+    }
+  } catch (err) {
+    console.error('Не удалось загрузить профиль:', err);
+  }
+}
+
+async function openProfileByNick(nick) {
+  try {
+    const snap = await getDoc(doc(db, 'usernames', nick.toLowerCase()));
+    if (snap.exists()) openProfile(snap.data().uid);
+  } catch (err) {
+    console.error('Не удалось открыть профиль:', err);
+  }
+}
+
+function onProfileKey(e) {
+  if (e.key === 'Escape') closeProfile();
+}
+
+function closeProfile() {
+  if (!profileDialogEl) return;
+  const el = profileDialogEl;
+  profileDialogEl = null;
+  document.removeEventListener('keydown', onProfileKey);
+  el.classList.remove('open');
+  setTimeout(() => el.remove(), 160);
+}
+
+async function openProfile(uid) {
+  if (!uid || profileDialogEl) return;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'wui-overlay';
+  overlay.innerHTML = `
+    <div class="wui-dialog" role="dialog" aria-modal="true" aria-labelledby="profTitle">
+      <div class="wui-body" id="profBody">
+        <div class="spinner-wrap"><div class="spinner"></div></div>
+      </div>
+      <div class="wui-footer">
+        <button class="wui-btn" id="profClose" type="button">Закрыть</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  profileDialogEl = overlay;
+  document.addEventListener('keydown', onProfileKey);
+  overlay.addEventListener('mousedown', (e) => { if (e.target === overlay) closeProfile(); });
+  overlay.querySelector('#profClose').addEventListener('click', closeProfile);
+  requestAnimationFrame(() => overlay.classList.add('open'));
+
+  const [nameSnap, , agg] = await Promise.all([
+    getDocs(query(collection(db, 'usernames'), where('uid', '==', uid), limit(1))),
+    ensureProfiles([uid]),
+    getAggregateFromServer(
+      query(postsRef, where('authorUid', '==', uid)),
+      { posts: count(), likes: sum('likes') }
+    ).catch(() => null)
+  ]);
+
+  if (profileDialogEl !== overlay) return; // окно уже закрыли
+
+  const nameData = nameSnap.empty ? null : nameSnap.docs[0].data();
+  const nick = nameData ? nameData.nickname : 'Пользователь';
+  const since = nameData && nameData.createdAt && nameData.createdAt.toDate
+    ? nameData.createdAt.toDate().toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
+    : null;
+  const prof = profileCache.get(uid) || {};
+  const stats = agg ? agg.data() : { posts: 0, likes: 0 };
+  const isMe = uid === currentUserId;
+
+  const body = overlay.querySelector('#profBody');
+  body.innerHTML = `
+    <div class="prof-head">
+      <span id="profAvatarSlot"></span>
+      <div class="prof-names">
+        <h2 class="wui-title" id="profTitle"></h2>
+        <div class="prof-since" id="profSince"></div>
+      </div>
+    </div>
+    <div class="prof-stats">
+      <div><b id="profPosts">0</b><span>сообщений</span></div>
+      <div><b id="profLikes">0</b><span>лайков получено</span></div>
+    </div>
+    ${isMe ? `
+      <label class="wui-field">
+        <span>О себе</span>
+        <textarea id="profBio" maxlength="200" rows="3"></textarea>
+      </label>
+      <label class="wui-field">
+        <span>Ссылка на аватарку (https)</span>
+        <input id="profPhoto" type="url" maxlength="500" placeholder="https://...">
+      </label>
+      <div class="prof-hint">Оставьте пустым, чтобы использовать фото Google или букву ника.</div>
+      <div class="wui-error" id="profError" hidden></div>
+    ` : `<div class="prof-bio" id="profBioView"></div>`}
+  `;
+
+  // динамические значения — только через textContent/value (без HTML)
+  body.querySelector('#profTitle').textContent = nick;
+  body.querySelector('#profSince').textContent = since ? `На форуме с ${since}` : '';
+  body.querySelector('#profPosts').textContent = stats.posts || 0;
+  body.querySelector('#profLikes').textContent = stats.likes || 0;
+
+  const photo = prof.photoURL || (isMe ? currentUserPhoto : null);
+  body.querySelector('#profAvatarSlot').replaceWith(createAvatar(nick, photo, 72));
+
+  if (isMe) {
+    body.querySelector('#profBio').value = prof.bio || '';
+    const googlePhoto = auth.currentUser ? auth.currentUser.photoURL : null;
+    body.querySelector('#profPhoto').value =
+      prof.photoURL && prof.photoURL !== googlePhoto ? prof.photoURL : '';
+
+    overlay.querySelector('.wui-footer').insertAdjacentHTML(
+      'afterbegin',
+      '<button class="wui-btn wui-btn-accent" id="profSave" type="button">Сохранить</button>'
+    );
+    overlay.querySelector('#profSave').addEventListener('click', () => saveProfile(overlay));
+  } else {
+    const bioEl = body.querySelector('#profBioView');
+    if (prof.bio) {
+      bioEl.textContent = prof.bio;
+    } else {
+      bioEl.textContent = 'Пока ничего не рассказал(а) о себе.';
+      bioEl.classList.add('prof-bio-empty');
+    }
+  }
+}
+
+async function saveProfile(overlay) {
+  const errBox = overlay.querySelector('#profError');
+  errBox.hidden = true;
+
+  const bio = overlay.querySelector('#profBio').value.trim().slice(0, 200);
+  let photo = overlay.querySelector('#profPhoto').value.trim();
+
+  if (photo && (!photo.startsWith('https://') || photo.length > 500)) {
+    errBox.textContent = 'Ссылка на аватарку должна начинаться с https:// (до 500 символов)';
+    errBox.hidden = false;
+    return;
+  }
+  if (!photo) photo = (auth.currentUser && auth.currentUser.photoURL) || null;
+
+  const saveBtn = overlay.querySelector('#profSave');
+  saveBtn.disabled = true;
+
+  try {
+    await setDoc(doc(db, 'profiles', currentUserId), {
+      bio,
+      photoURL: photo,
+      updatedAt: serverTimestamp()
+    });
+    profileCache.set(currentUserId, { bio, photoURL: photo });
+    currentUserPhoto = photo;
+    renderAuthUI();
+    if (lastPostsSnapshot) renderPosts(lastPostsSnapshot);
+    closeProfile();
+  } catch (err) {
+    console.error('Не удалось сохранить профиль:', err);
+    errBox.textContent = 'Не удалось сохранить профиль';
+    errBox.hidden = false;
+    saveBtn.disabled = false;
+  }
 }
 
 // ============================================================
