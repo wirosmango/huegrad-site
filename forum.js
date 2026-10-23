@@ -60,6 +60,19 @@ let unsubscribeNotifications = null;
 let notificationsUid = null;
 let notificationsLoaded = false;
 
+// ---- Вложения ----
+const CLOUDINARY_CLOUD = 'xwhjf44a';
+const CLOUDINARY_PRESET = 'dealdo';
+const MEDIA_HOST = `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/`;
+
+const MAX_ATTACHMENTS = 4;
+const MAX_IMAGE_MB = 15;   // до сжатия
+const MAX_VIDEO_MB = 15;
+const ATTACHMENTS_REQUIRE_LOGIN = true; // false — разрешить и гостям
+
+let pendingAttachments = [];
+let attachSeq = 0;
+
 let authReadyResolve;
 const authReady = new Promise((resolve) => { authReadyResolve = resolve; });
 
@@ -644,8 +657,14 @@ async function openTopic(topicId, title) {
       <div class="post">
         <input id="nickname" placeholder="Ваш ник" maxlength="30">
         <div class="input-wrapper">
-          <textarea id="message" placeholder="Сообщение (поддерживается **жирный**, *курсив*, \`код\`, ![alt](ссылка))" maxlength="2000"></textarea>
+          <textarea id="message" placeholder="Сообщение (поддерживается **жирный**, *курсив*, \`код\`)" maxlength="2000"></textarea>
           <div class="mention-popup" id="mentionPopup" hidden></div>
+          <button id="attachBtn" type="button" aria-label="Прикрепить файл">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+            </svg>
+          </button>
+          <input type="file" id="fileInput" accept="image/*,video/mp4,video/webm,video/quicktime" multiple hidden>
           <button id="sendBtn">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"/>
@@ -653,6 +672,7 @@ async function openTopic(topicId, title) {
             </svg>
           </button>
         </div>
+        <div class="attach-preview" id="attachPreview"></div>
         <div id="posts"><div class="spinner-wrap"><div class="spinner"></div></div></div>
       </div>
     </div>
@@ -662,6 +682,8 @@ async function openTopic(topicId, title) {
   updateNicknameField();
   document.getElementById('sendBtn').addEventListener('click', sendPost);
   setupMentionAutocomplete();
+  clearPendingAttachments();
+  setupAttachments();
 
   // --- Посты ---
   if (unsubscribePosts) unsubscribePosts();
@@ -764,7 +786,11 @@ function renderPosts(snapshot) {
     }
 
     head.append(avatarEl, meta);
-    div.append(head, msgEl, likeBtn);
+    div.append(head, msgEl);
+    if (Array.isArray(p.attachments) && p.attachments.length) {
+      div.appendChild(renderAttachments(p.attachments));
+    }
+    div.appendChild(likeBtn);
 
     container.appendChild(div);
   });
@@ -883,7 +909,17 @@ async function sendPost() {
 
   const nickname = currentUserNickname || nicknameInput.value.trim();
   const message = messageInput.value.trim();
-  if (!nickname || !message) return;
+
+  if (pendingAttachments.some((a) => a.status === 'uploading')) {
+    alert('Дождитесь окончания загрузки файлов');
+    return;
+  }
+  const attachments = pendingAttachments
+    .filter((a) => a.status === 'done')
+    .map((a) => a.result);
+
+  // можно отправить пост только с файлами, без текста
+  if (!nickname || (!message && !attachments.length)) return;
 
   // гость не может писать под ником, который занят зарегистрированным пользователем
   if (!currentUserNickname) {
@@ -910,11 +946,12 @@ async function sendPost() {
       createdAt: serverTimestamp(),
       likes: 0,
       ...(currentUserPhoto ? { photoURL: currentUserPhoto } : {}),
-      ...(currentUserNickname ? { authorUid: currentUserId } : {})
+      ...(currentUserNickname ? { authorUid: currentUserId } : {}),
+      ...(attachments.length ? { attachments } : {})
     });
     messageInput.value = '';
+    clearPendingAttachments();
 
-    // уведомления отправляем отдельно: их сбой не должен ломать публикацию
     notifyRecipients(postRef.id, message.slice(0, 2000), nickname)
       .catch((err) => console.error('Не удалось отправить уведомления:', err));
   } catch (err) {
@@ -1628,6 +1665,283 @@ async function saveProfile(overlay) {
     errBox.hidden = false;
     saveBtn.disabled = false;
   }
+}
+
+// ============================================================
+// Вложения (фото и видео)
+// ============================================================
+function isAllowedMediaUrl(url) {
+  return typeof url === 'string' && url.startsWith(MEDIA_HOST);
+}
+
+// Загрузка в Cloudinary с прогрессом
+function uploadFile(file, onProgress) {
+  return new Promise((resolve, reject) => {
+    const form = new FormData();
+    form.append('file', file);
+    form.append('upload_preset', CLOUDINARY_PRESET);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/auto/upload`);
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) onProgress(e.loaded / e.total);
+    };
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const r = JSON.parse(xhr.responseText);
+          resolve({ url: r.secure_url, type: r.resource_type === 'video' ? 'video' : 'image' });
+        } catch (e) {
+          reject(new Error('Некорректный ответ сервера'));
+        }
+      } else {
+        reject(new Error('Ошибка загрузки: ' + xhr.status));
+      }
+    };
+    xhr.onerror = () => reject(new Error('Сеть недоступна'));
+    xhr.send(form);
+  });
+}
+
+// Уменьшаем большие фото перед загрузкой
+async function compressImage(file) {
+  if (file.type === 'image/gif' || file.type === 'image/svg+xml') return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const maxSide = 1600;
+    const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+
+    if (scale === 1 && file.size < 1.5 * 1024 * 1024) {
+      bitmap.close();
+      return file;
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff'; // прозрачные области станут белыми
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+
+    const blob = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', 0.85));
+    if (!blob || blob.size >= file.size) return file;
+    return new File([blob], file.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' });
+  } catch (err) {
+    return file;
+  }
+}
+
+async function addFiles(fileList) {
+  if (ATTACHMENTS_REQUIRE_LOGIN && !currentUserNickname) {
+    alert('Прикреплять файлы могут только зарегистрированные пользователи. Войдите в аккаунт.');
+    return;
+  }
+
+  for (const original of fileList) {
+    if (pendingAttachments.length >= MAX_ATTACHMENTS) {
+      alert(`Не больше ${MAX_ATTACHMENTS} файлов в одном сообщении`);
+      break;
+    }
+
+    const isVideo = original.type.startsWith('video/');
+    const isImage = original.type.startsWith('image/');
+    if (!isImage && !isVideo) {
+      alert(`«${original.name}»: можно прикреплять только изображения и видео`);
+      continue;
+    }
+    if (isVideo && original.size > MAX_VIDEO_MB * 1024 * 1024) {
+      alert(`«${original.name}»: видео больше ${MAX_VIDEO_MB} МБ`);
+      continue;
+    }
+    if (isImage && original.size > MAX_IMAGE_MB * 1024 * 1024) {
+      alert(`«${original.name}»: изображение больше ${MAX_IMAGE_MB} МБ`);
+      continue;
+    }
+
+    const item = {
+      id: ++attachSeq,
+      isVideo,
+      previewUrl: URL.createObjectURL(original),
+      progress: 0,
+      status: 'uploading',
+      result: null
+    };
+    pendingAttachments.push(item);
+    renderAttachPreview();
+
+    // загрузка идёт в фоне, можно продолжать писать текст
+    (async () => {
+      try {
+        const file = isVideo ? original : await compressImage(original);
+        item.result = await uploadFile(file, (p) => {
+          item.progress = p;
+          const bar = document.querySelector(`[data-att="${item.id}"] .att-bar`);
+          if (bar) bar.style.width = Math.round(p * 100) + '%';
+        });
+        item.status = 'done';
+      } catch (err) {
+        console.error('Не удалось загрузить файл:', err);
+        item.status = 'error';
+      }
+      renderAttachPreview();
+    })();
+  }
+}
+
+function removeAttachment(id) {
+  const i = pendingAttachments.findIndex((a) => a.id === id);
+  if (i === -1) return;
+  URL.revokeObjectURL(pendingAttachments[i].previewUrl);
+  pendingAttachments.splice(i, 1);
+  renderAttachPreview();
+}
+
+function clearPendingAttachments() {
+  pendingAttachments.forEach((a) => URL.revokeObjectURL(a.previewUrl));
+  pendingAttachments = [];
+  renderAttachPreview();
+}
+
+function renderAttachPreview() {
+  const box = document.getElementById('attachPreview');
+  if (!box) return;
+  box.innerHTML = '';
+
+  pendingAttachments.forEach((item) => {
+    const tile = document.createElement('div');
+    tile.className = 'att-tile' + (item.status === 'error' ? ' error' : '');
+    tile.dataset.att = item.id;
+
+    if (item.isVideo) {
+      const v = document.createElement('video');
+      v.src = item.previewUrl;
+      v.muted = true;
+      v.preload = 'metadata';
+      tile.appendChild(v);
+      const badge = document.createElement('span');
+      badge.className = 'att-badge';
+      badge.textContent = '▶';
+      tile.appendChild(badge);
+    } else {
+      const img = document.createElement('img');
+      img.src = item.previewUrl;
+      img.alt = '';
+      tile.appendChild(img);
+    }
+
+    if (item.status === 'uploading') {
+      const track = document.createElement('div');
+      track.className = 'att-track';
+      const bar = document.createElement('div');
+      bar.className = 'att-bar';
+      bar.style.width = Math.round(item.progress * 100) + '%';
+      track.appendChild(bar);
+      tile.appendChild(track);
+    } else if (item.status === 'error') {
+      const msg = document.createElement('div');
+      msg.className = 'att-error';
+      msg.textContent = 'Ошибка';
+      tile.appendChild(msg);
+    }
+
+    const rm = document.createElement('button');
+    rm.type = 'button';
+    rm.className = 'att-remove';
+    rm.setAttribute('aria-label', 'Убрать файл');
+    rm.textContent = '×';
+    rm.addEventListener('click', () => removeAttachment(item.id));
+    tile.appendChild(rm);
+
+    box.appendChild(tile);
+  });
+}
+
+function setupAttachments() {
+  const attachBtn = document.getElementById('attachBtn');
+  const fileInput = document.getElementById('fileInput');
+  const textarea = document.getElementById('message');
+  if (!attachBtn || !fileInput || !textarea) return;
+
+  attachBtn.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', () => {
+    addFiles([...fileInput.files]);
+    fileInput.value = '';
+  });
+
+  // вставка картинки из буфера (Ctrl+V)
+  textarea.addEventListener('paste', (e) => {
+    const files = [...(e.clipboardData ? e.clipboardData.files : [])]
+      .filter((f) => f.type.startsWith('image/'));
+    if (files.length && !e.clipboardData.getData('text')) {
+      e.preventDefault();
+      addFiles(files);
+    }
+  });
+
+  // перетаскивание файлов в поле ввода
+  textarea.addEventListener('dragover', (e) => e.preventDefault());
+  textarea.addEventListener('drop', (e) => {
+    if (e.dataTransfer && e.dataTransfer.files.length) {
+      e.preventDefault();
+      addFiles([...e.dataTransfer.files]);
+    }
+  });
+
+  renderAttachPreview();
+}
+
+// ----- отображение вложений в посте -----
+function renderAttachments(list) {
+  const wrap = document.createElement('div');
+  wrap.className = 'post-attachments';
+
+  list.slice(0, MAX_ATTACHMENTS).forEach((a) => {
+    if (!a || !isAllowedMediaUrl(a.url)) return;
+
+    if (a.type === 'video') {
+      const v = document.createElement('video');
+      v.src = a.url;
+      v.controls = true;
+      v.preload = 'metadata';
+      v.playsInline = true;
+      wrap.appendChild(v);
+    } else {
+      const img = document.createElement('img');
+      // Cloudinary отдаёт уменьшенную копию для ленты; оригинал — в просмотрщике
+      img.src = a.url.includes('/upload/')
+        ? a.url.replace('/upload/', '/upload/w_900,c_limit,q_auto,f_auto/')
+        : a.url;
+      img.alt = '';
+      img.loading = 'lazy';
+      img.addEventListener('click', () => openLightbox(a.url));
+      wrap.appendChild(img);
+    }
+  });
+
+  return wrap;
+}
+
+function openLightbox(url) {
+  const overlay = document.createElement('div');
+  overlay.className = 'lightbox';
+
+  const img = document.createElement('img');
+  img.src = url;
+  img.alt = '';
+  overlay.appendChild(img);
+
+  const close = () => {
+    overlay.remove();
+    document.removeEventListener('keydown', onKey);
+  };
+  const onKey = (e) => { if (e.key === 'Escape') close(); };
+
+  overlay.addEventListener('click', close);
+  document.addEventListener('keydown', onKey);
+  document.body.appendChild(overlay);
 }
 
 // ============================================================

@@ -2810,3 +2810,158 @@ ul.styled-list {
   border-bottom-color: var(--wui-accent);
   box-shadow: inset 0 -1px 0 var(--wui-accent);
 }
+
+/* ===== Вложения ===== */
+.input-wrapper textarea {
+  padding-right: 108px; /* место под две кнопки */
+}
+
+.input-wrapper #attachBtn {
+  right: 58px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.input-wrapper #attachBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.attach-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.attach-preview:empty {
+  display: none;
+}
+
+.att-tile {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+}
+
+.att-tile img,
+.att-tile video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.att-tile.error {
+  border-color: #c42b1c;
+}
+
+.att-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 12px;
+}
+
+.att-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.att-bar {
+  height: 100%;
+  background: #6366f1;
+  transition: width 0.15s ease;
+}
+
+.att-error {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2px 0;
+  background: rgba(196, 43, 28, 0.9);
+  color: #fff;
+  font-size: 11px;
+  text-align: center;
+}
+
+.att-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.att-remove:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+/* вложения в посте */
+.post-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.post-attachments img,
+.post-attachments video {
+  display: block;
+  max-width: 100%;
+  max-height: 360px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.post-attachments img {
+  cursor: zoom-in;
+}
+
+/* полноэкранный просмотр */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.85);
+  cursor: zoom-out;
+}
+
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+}
