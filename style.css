@@ -22,8 +22,8 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.45);
-  --font: 'Segoe UI Variable', 'Segoe UI', 'Inter', sans-serif;
-  --font-mono: 'Cascadia Code', 'JetBrains Mono', monospace;
+  --font: var(--font-medeo-sans), 'Segoe UI Variable', 'Segoe UI', sans-serif;
+  --font-mono: 'Cascadia Code', var(--font-medeo-mono), monospace;
   --nav-width-collapsed: 48px;
   --nav-width-expanded: 280px;
   --titlebar-height: 48px;
